@@ -1,0 +1,156 @@
+/* styles.css */
+
+/* Font face for Inter Variable */
+@font-face {
+    font-family: 'Inter Variable';
+    src: url('/static/fonts/Inter-VariableFont_slnt,wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Body font */
+body {
+    font-family: 'Inter Variable', sans-serif;
+    background-color: #f5f5f5; /* Light background for contrast */
+    color: #333; /* Dark text for contrast */
+    font-size: 1.2rem; /* Larger base font size */
+    line-height: 1.6; /* Improved line height */
+}
+
+/* Fade-in and fade-out with vertical movement animations */
+@keyframes moveIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes moveOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* Question container styles */
+.question {
+    display: none; /* Hide all questions by default */
+    opacity: 0;
+    transition: opacity 1s, transform 1s;
+}
+
+.question.active {
+    display: block; /* Show the active question */
+    animation: moveIn 1s forwards;
+}
+
+.question.fade-out {
+    animation: moveOut 1s forwards;
+}
+
+/* Quiz container styles */
+.quiz-container {
+    transform: scale(0.65);
+    position: relative;
+    top: -100px;
+    font-family: 'Inter Variable', Arial, sans-serif;
+}
+
+.next-button {
+    width: 120px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: lightblue;
+    font-weight: 700;
+    font-family: 'Inter Variable', Arial, sans-serif;
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+
+/* Option label styles */
+.option-label {
+    padding: 10px; /* Increased padding */
+    font-size: 2.5rem;
+    font-family: 'Inter Variable', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Highlight for focused labels */
+.option-label:focus-within {
+    outline: 2px solid #007BFF;
+    outline-offset: 2px;
+}
+
+/* Hide the original radio button */
+.option-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Custom radio button styles */
+.custom-radio {
+    width: 35px;  /* Increased size */
+    height: 35px; /* Increased size */
+    border: 2px solid black;
+    border-radius: 50%;
+    margin-right: 15px; /* Increased margin */
+    position: relative;
+}
+
+/* Custom radio button inner circle styles */
+.custom-radio::after {
+    content: '';
+    width: 50px;  /* Size of the inner circle */
+    height: 50px; /* Size of the inner circle */
+    background-color: black;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Show the inner circle when the radio button is checked */
+.option-input:checked + .custom-radio::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Submit button styles */
+.submit-button {
+    width: 120px;  /* Increased size */
+    height: 50px;  /* Increased size */
+    border-radius: 5px; /* Adjusted for better accessibility */
+    background-color: lightblue;
+    font-weight: 700;
+    font-family: 'Inter Variable', Arial, sans-serif;
+    font-size: 1.2rem; /* Increased font size */
+}
+
+.submit-button:focus {
+    outline: 2px solid #007BFF; /* Highlight for focused button */
+    outline-offset: 2px;
+}
+
+/* Ensure visibility of h3 */
+h3 {
+    font-size: 2.5rem; /* Larger heading size */
+    margin-bottom: 20px; /* Increased spacing */
+}
+
+.quiz-title {
+    text-align: center; /* Horizontal centering */
+    margin-top: 50px; /* Adjust top margin as needed for vertical centering */
+}

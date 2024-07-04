@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBS Self-Referral Form</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
+</head>
+<body>
+    <h1 class="quiz-title">DBS Self-Referral Form</h1>
+
+    <div class="quiz-container" id="quiz-container">
+        <!-- Question 1 -->
+        <div class="question" id="question-1">
+            <h3>What fraction of a day is 6 hours?</h3>
+            <p>Choose 1 answer</p>
+            <hr />
+            <div class="option-block">
+                <label for="option-11" class="option-label">
+                    <input type="radio" name="question-1" value="6/24" id="option-11" class="option-input" />
+                    <span class="custom-radio"></span>
+                    6/24
+                </label>
+                <span id="result-11"></span>
+            </div>
+            <hr />
+            <div class="option-block">
+                <label for="option-12" class="option-label">
+                    <input type="radio" name="question-1" value="6" id="option-12" class="option-input" />
+                    <span class="custom-radio"></span>
+                    6
+                </label>
+                <span id="result-12"></span>
+            </div>
+            <hr />
+            <div class="option-block">
+                <label for="option-13" class="option-label">
+                    <input type="radio" name="question-1" value="1/3" id="option-13" class="option-input" />
+                    <span class="custom-radio"></span>
+                    1/3
+                </label>
+                <span id="result-13"></span>
+            </div>
+            <hr />
+            <div class="option-block">
+                <label for="option-14" class="option-label">
+                    <input type="radio" name="question-1" value="1/6" id="option-14" class="option-input" />
+                    <span class="custom-radio"></span>
+                    1/6
+                </label>
+                <span id="result-14"></span>
+            </div>
+            <hr />
+            <button type="button" class="next-button" onclick="nextQuestion()">Next</button>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question" id="question-2">
+            <h3>What is the capital of France?</h3>
+            <p>Choose 1 answer</p>
+            <hr />
+            <div class="option-block">
+                <label for="option-21" class="option-label">
+                    <input type="radio" name="question-2" value="Paris" id="option-21" class="option-input" />
+                    <span class="custom-radio"></span>
+                    Paris
+                </label>
+                <span id="result-21"></span>
+            </div>
+            <hr />
+            <div class="option-block">
+                <label for="option-22" class="option-label">
+                    <input type="radio" name="question-2" value="London" id="option-22" class="option-input" />
+                    <span class="custom-radio"></span>
+                    London
+                </label>
+                <span id="result-22"></span>
+            </div>
+            <hr />
+            <div class="option-block">
+                <label for="option-23" class="option-label">
+                    <input type="radio" name="question-2" value="Berlin" id="option-23" class="option-input" />
+                    <span class="custom-radio"></span>
+                    Berlin
+                </label>
+                <span id="result-23"></span>
+            </div>
+            <hr />
+            <div class="option-block">
+                <label for="option-24" class="option-label">
+                    <input type="radio" name="question-2" value="Madrid" id="option-24" class="option-input" />
+                    <span class="custom-radio"></span>
+                    Madrid
+                </label>
+                <span id="result-24"></span>
+            </div>
+            <hr />
+            <button type="button" class="next-button" onclick="nextQuestion()">Next</button>
+        </div>
+
+        <!-- Additional questions can be added here in the same structure -->
+    </div>
+
+    <script src="/static/js/scripts.js"></script>
+</body>
+</html>
