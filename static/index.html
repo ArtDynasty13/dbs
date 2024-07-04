@@ -5,12 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DBS Self-Referral Form</title>
     <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <style>
+        /* Your existing CSS styles */
+    </style>
 </head>
 <body>
     <h1 class="quiz-title">DBS Self-Referral Form</h1>
 
     <div class="quiz-container" id="quiz-container">
-        <!-- Question 1 -->
+        <!-- Progress bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+                <!-- Question 1 -->
         <div class="question" id="question-1">
             <h3>What fraction of a day is 6 hours?</h3>
             <p>Choose 1 answer</p>
@@ -51,8 +59,11 @@
                 <span id="result-14"></span>
             </div>
             <hr />
+            <!-- Back button is hidden on first question -->
+            <button type="button" class="back-button" onclick="previousQuestion()" style="display: none;">Back</button>
             <button type="button" class="next-button" onclick="nextQuestion()">Next</button>
         </div>
+
 
         <!-- Question 2 -->
         <div class="question" id="question-2">
@@ -95,6 +106,7 @@
                 <span id="result-24"></span>
             </div>
             <hr />
+            <button type="button" class="next-button" onclick="previousQuestion()">Back</button> <!--I just made this the same css-->
             <button type="button" class="next-button" onclick="nextQuestion()">Next</button>
         </div>
 

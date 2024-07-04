@@ -17,6 +17,19 @@ body {
     line-height: 1.6; /* Improved line height */
 }
 
+.progress-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    margin: 20px 0;
+}
+
+.progress-bar {
+    width: 0;
+    height: 10px;
+    background-color: #76c7c0;
+}
+
+
 /* Fade-in and fade-out with vertical movement animations */
 @keyframes moveIn {
     from {
@@ -139,28 +152,6 @@ body {
     width: 0;
     height: 10px;
     background-color: #76c7c0;
-}
-
-/* Navigation buttons styles */
-.nav-buttons {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.nav-button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.nav-button.disabled {
-    background-color: #c0c0c0;
-    cursor: not-allowed;
 }
 
 
