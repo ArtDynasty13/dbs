@@ -30,12 +30,12 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("Questions container not found in the DOM.");
             return;
         }
-        
+
         questions.forEach(question => {
             const questionElement = createQuestionElement(question);
             questionsContainer.appendChild(questionElement);
         });
-        
+
         showQuestion(currentQuestionIndex);
     }
 
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const questionDiv = document.createElement('div');
         questionDiv.classList.add('question');
         questionDiv.id = `question-${questionData.id}`;
-        
+
         let optionsHTML = '';
         questionData.options.forEach((option, index) => {
             const optionId = `option-${questionData.id}-${index + 1}`;
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <button type="button" class="back-button">Back</button>
             <button type="button" class="next-button">Next</button>
         `;
-        
+
         // Hide back button on first question
         if (questionData.id === 1) {
             questionDiv.querySelector('.back-button').style.display = 'none';
@@ -93,18 +93,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show a specific question by index
     function showQuestion(index) {
         const questionElements = document.querySelectorAll('.question');
-        
+
         if (index >= 0 && index < questionElements.length) {
             questionElements.forEach((questionElement, i) => {
                 if (i === index) {
                     questionElement.classList.remove('fade-out');
                     questionElement.classList.add('active');
-                } else if (questionElement.classList.contains('active')) {
+                } else {
                     questionElement.classList.remove('active');
                     questionElement.classList.add('fade-out');
                 }
             });
-            
+
             // Toggle back button visibility
             const backButton = questionElements[index].querySelector('.back-button');
             backButton.style.display = index === 0 ? 'none' : 'inline-block';
@@ -121,27 +121,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Move to the next question
     function nextQuestion() {
-        if (currentQuestionIndex < questions.length - 1) {
-            const currentQuestion = document.querySelector(`.question:nth-child(${currentQuestionIndex + 1})`);
+        const questionElements = document.querySelectorAll('.question');
+        const currentQuestion = questionElements[currentQuestionIndex];
+        console.log('Current Question Index:', currentQuestionIndex);
+        console.log('Current Question Element:', currentQuestion);
+
+        if (currentQuestion) {
             currentQuestion.classList.add('fade-out');
 
             setTimeout(() => {
-                currentQuestionIndex++;
-                showQuestion(currentQuestionIndex);
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    showQuestion(currentQuestionIndex);
+                }
             }, animationDuration);
+        } else {
+            console.error('Current question element not found.');
         }
     }
 
     // Move to the previous question
     function previousQuestion() {
-        if (currentQuestionIndex > 0) {
-            const currentQuestion = document.querySelector(`.question:nth-child(${currentQuestionIndex + 1})`);
+        const questionElements = document.querySelectorAll('.question');
+        const currentQuestion = questionElements[currentQuestionIndex];
+        console.log('Current Question Index:', currentQuestionIndex);
+        console.log('Current Question Element:', currentQuestion);
+
+        if (currentQuestion) {
             currentQuestion.classList.add('fade-out');
 
             setTimeout(() => {
-                currentQuestionIndex--;
-                showQuestion(currentQuestionIndex);
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    showQuestion(currentQuestionIndex);
+                }
             }, animationDuration);
+        } else {
+            console.error('Current question element not found.');
         }
     }
 
