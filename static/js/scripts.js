@@ -8,32 +8,17 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 1,
             question: "1. What fraction of a day is 6 hours?",
-            options: [
-                { id: "option-11", value: "6/24", label: "6/24" },
-                { id: "option-12", value: "6", label: "6" },
-                { id: "option-13", value: "1/3", label: "1/3" },
-                { id: "option-14", value: "1/6", label: "1/6" }
-            ]
+            options: ["6/24", "6", "1/3", "1/6"]
         },
         {
             id: 2,
             question: "2. Are you a genius?",
-            options: [
-                { id: "option-21", value: "yes", label: "yes" },
-                { id: "option-22", value: "no", label: "no" },
-                { id: "option-23", value: "maybe", label: "maybe" },
-                { id: "option-24", value: "so", label: "so" }
-            ]
+            options: ["yes", "no", "maybe", "so"]
         },
         {
             id: 3,
             question: "3. Bornkus?",
-            options: [
-                { id: "option-31", value: "yes", label: "yes" },
-                { id: "option-32", value: "no", label: "no" },
-                { id: "option-33", value: "maybe", label: "maybe" },
-                { id: "option-34", value: "so", label: "so" }
-            ]
+            options: ["yes", "no", "maybe", "so"]
         }
         // Add more questions as needed
     ];
@@ -61,15 +46,16 @@ document.addEventListener('DOMContentLoaded', function() {
         questionDiv.id = `question-${questionData.id}`;
         
         let optionsHTML = '';
-        questionData.options.forEach(option => {
+        questionData.options.forEach((option, index) => {
+            const optionId = `option-${questionData.id}-${index + 1}`;
             optionsHTML += `
                 <div class="option-block">
-                    <label for="${option.id}" class="option-label">
-                        <input type="radio" name="question-${questionData.id}" value="${option.value}" id="${option.id}" class="option-input" />
+                    <label for="${optionId}" class="option-label">
+                        <input type="radio" name="question-${questionData.id}" value="${option}" id="${optionId}" class="option-input" />
                         <span class="custom-radio"></span>
-                        ${option.label}
+                        ${option}
                     </label>
-                    <span id="result-${option.id}"></span>
+                    <span id="result-${optionId}"></span>
                 </div>
                 <hr />
             `;
@@ -113,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (i === index) {
                     questionElement.classList.remove('fade-out');
                     questionElement.classList.add('active');
-                } else {
+                } else if (questionElement.classList.contains('active')) {
                     questionElement.classList.remove('active');
                     questionElement.classList.add('fade-out');
                 }
@@ -136,16 +122,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Move to the next question
     function nextQuestion() {
         if (currentQuestionIndex < questions.length - 1) {
-            currentQuestionIndex++;
-            showQuestion(currentQuestionIndex);
+            const currentQuestion = document.querySelector(`.question:nth-child(${currentQuestionIndex + 1})`);
+            currentQuestion.classList.add('fade-out');
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            }, animationDuration);
         }
     }
 
     // Move to the previous question
     function previousQuestion() {
         if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            showQuestion(currentQuestionIndex);
+            const currentQuestion = document.querySelector(`.question:nth-child(${currentQuestionIndex + 1})`);
+            currentQuestion.classList.add('fade-out');
+
+            setTimeout(() => {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+            }, animationDuration);
         }
     }
 
