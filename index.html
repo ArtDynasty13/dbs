@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accessible Survey</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>DBS Self-Referral Form</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
 </head>
 <body>
-    <div class="progress-container">
-        <div class="progress-bar" id="progress-bar"></div>
-    </div>
-    <div id="quiz-container">
-        <!-- Existing questions go here -->
+    <h1 class="quiz-title">DBS Self-Referral Form</h1>
+
+    <div class="quiz-container" id="quiz-container">
+        <!-- Question 1 -->
         <div class="question" id="question-1">
             <h3>What fraction of a day is 6 hours?</h3>
             <p>Choose 1 answer</p>
@@ -54,9 +53,54 @@
             <hr />
             <button type="button" class="next-button" onclick="nextQuestion()">Next</button>
         </div>
-        <!-- Add more questions as needed -->
+
+        <!-- Question 2 -->
+        <div class="question" id="question-2">
+            <h3>What is the capital of France?</h3>
+            <p>Choose 1 answer</p>
+            <hr />
+            <div class="option-block">
+                <label for="option-21" class="option-label">
+                    <input type="radio" name="question-2" value="Paris" id="option-21" class="option-input" />
+                    <span class="custom-radio"></span>
+                    Paris
+                </label>
+                <span id="result-21"></span>
+            </div>
+            <hr />
+            <div class="option-block">
+                <label for="option-22" class="option-label">
+                    <input type="radio" name="question-2" value="London" id="option-22" class="option-input" />
+                    <span class="custom-radio"></span>
+                    London
+                </label>
+                <span id="result-22"></span>
+            </div>
+            <hr />
+            <div class="option-block">
+                <label for="option-23" class="option-label">
+                    <input type="radio" name="question-2" value="Berlin" id="option-23" class="option-input" />
+                    <span class="custom-radio"></span>
+                    Berlin
+                </label>
+                <span id="result-23"></span>
+            </div>
+            <hr />
+            <div class="option-block">
+                <label for="option-24" class="option-label">
+                    <input type="radio" name="question-2" value="Madrid" id="option-24" class="option-input" />
+                    <span class="custom-radio"></span>
+                    Madrid
+                </label>
+                <span id="result-24"></span>
+            </div>
+            <hr />
+            <button type="button" class="next-button" onclick="nextQuestion()">Next</button>
+        </div>
+
+        <!-- Additional questions can be added here in the same structure -->
     </div>
-    <div class="nav-buttons" id="nav-buttons"></div>
-    <script src="scripts.js"></script>
+
+    <script src="/js/scripts.js"></script>
 </body>
 </html>
