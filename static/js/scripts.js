@@ -8,20 +8,23 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 1,
             question: "1. Have you been diagnosed with any of the following?",
-            options: ["Parkinson's", "Essential Tremor", "Dystonia"],
-            multiple: true
+            options: ["Parkinson's", "Essential Tremor", "Dystonia", "None"],
+            multiple: true,
+            disqualifyingOptions: ["None"] // Disqualifying option for this question
         },
         {
             id: 2,
             question: "2. Are you a genius?",
             options: ["yes", "no", "maybe", "so"],
-            multiple: false
+            multiple: false,
+            disqualifyingOptions: [] // No disqualifying options for this question
         },
         {
             id: 3,
             question: "3. Which programming languages do you know?",
             options: ["JavaScript", "Python", "Java", "C++"],
-            multiple: true
+            multiple: true,
+            disqualifyingOptions: [] // No disqualifying options for this question
         }
         // Add more questions as needed
     ];
@@ -38,6 +41,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const questionElement = createQuestionElement(question);
             questionsContainer.appendChild(questionElement);
         });
+
+        // Create disqualification screen
+        const disqualificationScreen = document.createElement('div');
+        disqualificationScreen.id = 'disqualification-screen';
+        disqualificationScreen.classList.add('question');
+        disqualificationScreen.innerHTML = `
+            <div id="disqualification-message" style="color: red; font-size: 1.5rem; margin-top: 20px;">
+                You are not a candidate for deep brain stimulation.
+            </div>
+        `;
+        questionsContainer.appendChild(disqualificationScreen);
 
         showQuestion(currentQuestionIndex);
     }
@@ -111,7 +125,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Toggle back button visibility
             const backButton = questionElements[index].querySelector('.back-button');
-            backButton.style.display = index === 0 ? 'none' : 'inline-block';
+            if (backButton) {
+                backButton.style.display = index === 0 ? 'none' : 'inline-block';
+            }
 
             // Update progress bar
             const progressPercent = ((index + 1) / questions.length) * 100;
@@ -123,17 +139,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Move to the next question
     function nextQuestion() {
         const questionElements = document.querySelectorAll('.question');
         const currentQuestion = questionElements[currentQuestionIndex];
-        console.log('Current Question Index:', currentQuestionIndex);
-        console.log('Current Question Element:', currentQuestion);
+        const disqualificationMessage = document.getElementById('disqualification-message');
 
         // Check if an option is selected
         const selectedOptions = currentQuestion.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
-        if (selectedOptions.length === 0) {
+        const selectedValues = Array.from(selectedOptions).map(option => option.value);
+
+        // Specific check for disqualifying options
+        const disqualifyingOptions = questions[currentQuestionIndex].disqualifyingOptions;
+
+        if (selectedValues.length === 0) {
             alert('Please select an answer before proceeding to the next question.');
+            return;
+        }
+
+        const isDisqualified = selectedValues.some(value => disqualifyingOptions.includes(value));
+        if (isDisqualified) {
+            disqualificationMessage.innerHTML = 'You are not a candidate for deep brain stimulation.';
+            currentQuestion.classList.add('fade-out');
+            setTimeout(() => {
+                showQuestion(questionElements.length - 1);
+            }, animationDuration);
             return;
         }
 
