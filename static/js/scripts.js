@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         disqualificationScreen.classList.add('question');
         disqualificationScreen.innerHTML = `
             <div id="disqualification-message" style="color: red; font-size: 1.5rem; margin-top: 20px;">
-                You are not a candidate for deep brain stimulation.
+                Non-candidacy.
             </div>
         `;
         questionsContainer.appendChild(disqualificationScreen);
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const isDisqualified = selectedValues.some(value => disqualifyingOptions.includes(value));
         if (isDisqualified) {
-            disqualificationMessage.innerHTML = 'You are not a candidate for deep brain stimulation.';
+            disqualificationMessage.innerHTML = 'Based on your answers, you may not qualify for Deep Brain Stimulation.';
             currentQuestion.classList.add('fade-out');
             setTimeout(() => {
                 showQuestion(questionElements.length - 1);
