@@ -7,18 +7,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const questions = [
         {
             id: 1,
-            question: "1. What fraction of a day is 6 hours?",
-            options: ["6/24", "6", "1/3", "1/6"]
+            question: "1. Have you been diagnosed with any of the following?",
+            options: ["Parkinson's", "Essential Tremor", "Dystonia"],
+            multiple: true
         },
         {
             id: 2,
             question: "2. Are you a genius?",
-            options: ["yes", "no", "maybe", "so"]
+            options: ["yes", "no", "maybe", "so"],
+            multiple: false
         },
         {
             id: 3,
-            question: "3. Bornkus?",
-            options: ["yes", "no", "maybe", "so"]
+            question: "3. Which programming languages do you know?",
+            options: ["JavaScript", "Python", "Java", "C++"],
+            multiple: true
         }
         // Add more questions as needed
     ];
@@ -48,10 +51,11 @@ document.addEventListener('DOMContentLoaded', function() {
         let optionsHTML = '';
         questionData.options.forEach((option, index) => {
             const optionId = `option-${questionData.id}-${index + 1}`;
+            const inputType = questionData.multiple ? 'checkbox' : 'radio';
             optionsHTML += `
                 <div class="option-block">
                     <label for="${optionId}" class="option-label">
-                        <input type="radio" name="question-${questionData.id}" value="${option}" id="${optionId}" class="option-input" />
+                        <input type="${inputType}" name="question-${questionData.id}" value="${option}" id="${optionId}" class="option-input" />
                         <span class="custom-radio"></span>
                         ${option}
                     </label>
@@ -64,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Build question HTML
         questionDiv.innerHTML = `
             <h3>${questionData.question}</h3>
-            <p>Choose 1 answer</p>
+            <p>Choose ${questionData.multiple ? 'one or more answers' : '1 answer'}</p>
             <hr />
             ${optionsHTML}
             <button type="button" class="back-button">Back</button>
@@ -125,6 +129,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentQuestion = questionElements[currentQuestionIndex];
         console.log('Current Question Index:', currentQuestionIndex);
         console.log('Current Question Element:', currentQuestion);
+
+        // Check if an option is selected
+        const selectedOptions = currentQuestion.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
+        if (selectedOptions.length === 0) {
+            alert('Please select an answer before proceeding to the next question.');
+            return;
+        }
 
         if (currentQuestion) {
             currentQuestion.classList.add('fade-out');
