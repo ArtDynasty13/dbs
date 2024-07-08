@@ -8,38 +8,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const questions = [
         {
             id: 1,
-            question: "1. How many doses of levodopa are you taking?",
-            options: ["3 doses or less", "4 doses", "5 doses or greater"],
-            multiple: false
+            question: "1. Are you taking 5 doses or greater of levodopa?",
+            options: ["Yes", "No"],
+            multiple: false,
+            disqualifyingOptions: ["No"]
         },
         {
             id: 2,
-            question: "2. How long have you been diagnosed with Parkinson's?",
-            options: ["less than 1 year", "1-3 years", "more than 3 years"],
+            question: "2. Are you experiencing a total of greater than 2 hours daily with “off” time?",
+            options: ["Yes", "No"],
             multiple: false,
-            disqualifyingOptions: ["less than 1 year"]
+            disqualifyingOptions: ["No"]
         },
         {
             id: 3,
-            question: "3. Do you have dementia, psychosis or untreated depression?",
+            question: "3. Are you experiencing unpredictable fluctuations of motor symptoms with your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
-            disqualifyingOptions: ["Yes"]
+            disqualifyingOptions: ["No"]
         },
         {
             id: 4,
-            question: "4. Do you have tremors and dyskinesias (involuntary movements of the face, arms, legs or trunk) that limit activities in your daily life?",
+            question: "4. Are you experiencing troublesome dyskinesia with your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
-            points: { "Yes": 1, "No": 0 }
         },
         {
             id: 5,
-            question: "5. Do you sometimes experience severe motor fluctuations (sudden and unpredictable recurrence of symptoms) despite your medication?",
+            question: "Are you presently limited in performing one or more activities of daily living (eg, writing, walking, bathing, dressing, eating, toileting, etc.)?",
             options: ["Yes", "No"],
             multiple: false,
-            points: { "Yes": 1, "No": 0 }
-        }
+        },
     ];
 
     // Initialize the form with questions
@@ -174,11 +173,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (questionData.disqualifyingOptions && questionData.disqualifyingOptions.includes(selectedOption.value)) {
             customMessage = ""
-            if(`${questionData.id}` == 2){ //for length
-                customMessage = "Based on how long you have had a Parkinson's diagnosis, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
+            if(`${questionData.id}` == 2){ //for length of diagnosis
+                //customMessage = "Based on how long you have had a Parkinson's diagnosis, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
             }
             if(`${questionData.id}` == 3){ //for cognitive conditions
-                customMessage = "DBS is not recommended for you because it can potentially worsen these conditions. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
+                //customMessage = "DBS is not recommended because it can potentially worsen these conditions. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
             }
             displayCustomResult(customMessage);
             console.log(`${questionData.id}`);
