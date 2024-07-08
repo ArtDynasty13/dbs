@@ -193,4 +193,9 @@ h3 {
     margin-top: 50px; /* Adjust top margin as needed for vertical centering */
 }
 
+.bracket-text {
+    color: green; /* Change 'green' to any color you prefer */
+    /* Add any other styles as needed */
+}
+
 

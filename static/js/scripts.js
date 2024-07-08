@@ -69,12 +69,20 @@ document.addEventListener('DOMContentLoaded', function() {
         showQuestion(currentQuestionIndex);
     }
 
-    // Function to create a question element
     function createQuestionElement(questionData) {
         const questionDiv = document.createElement('div');
         questionDiv.classList.add('question');
         questionDiv.id = `question-${questionData.id}`;
-
+    
+        // Function to wrap text inside brackets with a span for styling
+        function formatQuestionText(questionText) {
+            // Match text inside both square brackets [] and round brackets ()
+            return questionText.replace(/\[(.*?)\]/g, '<span class="bracket-text">[$1]</span>')
+                            .replace(/\((.*?)\)/g, '<span class="bracket-text">($1)</span>');
+        }
+    
+        let formattedQuestion = formatQuestionText(questionData.question);
+    
         let optionsHTML = '';
         questionData.options.forEach((option, index) => {
             const optionId = `option-${questionData.id}-${index + 1}`;
@@ -91,33 +99,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 <hr />
             `;
         });
-
+    
         // Build question HTML
         questionDiv.innerHTML = `
-            <h3>${questionData.question}</h3>
+            <h3>${formattedQuestion}</h3>
             <p>Choose ${questionData.multiple ? 'one or more answers' : '1 answer'}</p>
             <hr />
             ${optionsHTML}
             <button type="button" class="back-button">Back</button>
             <button type="button" class="next-button">Next</button>
         `;
-
+    
         // Hide back button on first question
         if (questionData.id === 1) {
             questionDiv.querySelector('.back-button').style.display = 'none';
         }
-
+    
         // Add event listeners for next and previous buttons
         const backButton = questionDiv.querySelector('.back-button');
         if (backButton) {
             backButton.addEventListener('click', previousQuestion);
         }
-
+    
         const nextButton = questionDiv.querySelector('.next-button');
         if (nextButton) {
             nextButton.addEventListener('click', () => nextQuestion(questionData));
         }
-
+    
         return questionDiv;
     }
 
