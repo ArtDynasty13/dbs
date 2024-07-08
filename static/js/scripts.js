@@ -165,12 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (questionData.disqualifyingOptions && questionData.disqualifyingOptions.includes(selectedOption.value)) {
-            document.getElementById('disqualification-screen').style.display = 'block';
-            document.querySelectorAll('.question').forEach(questionElement => {
-                if (questionElement.id !== 'disqualification-screen') {
-                    questionElement.style.display = 'none';
-                }
-            });
+            displayCustomResult("Non-candidacy");
             return;
         }
 
@@ -186,6 +181,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentQuestionIndex > 0) {
             showQuestion(currentQuestionIndex - 1);
         }
+    }
+
+    // Function to display custom result
+    function displayCustomResult(message) {
+        const questionsContainer = document.getElementById('questions-container');
+        questionsContainer.innerHTML = `
+            <div class="custom-result">
+                <h3>${message}</h3>
+            </div>
+        `;
     }
 
     // Function to determine the category based on answers
@@ -214,23 +219,9 @@ document.addEventListener('DOMContentLoaded', function() {
             category = "Cat 3: Patient may not be controlled on the current treatment regimen and may benefit from device-aided therapy. It is suggested that you evaluate eligibility for device-aided therapy based on patient’s medical history, treatment preference, and your best medical judgment for treatment recommendation.";
         }
 
-        // Display the category to the user
-        const resultContainer = document.createElement('div');
-        resultContainer.classList.add('result');
-        resultContainer.innerHTML = `<h3>Result</h3><p>${category}</p>`;
-        document.getElementById('questions-container').appendChild(resultContainer);
-
-        // Hide all questions
-        const questionElements = document.querySelectorAll('.question');
-        questionElements.forEach(questionElement => {
-            questionElement.classList.add('fade-out');
-        });
-
-        // Show result container
-        resultContainer.classList.remove('fade-out');
-        resultContainer.classList.add('active');
+        displayCustomResult(category);
     }
 
-    // Initizalise the form when the DOM content is loaded
+    // Initialize the form when the DOM content is loaded
     initializeForm();
 });
