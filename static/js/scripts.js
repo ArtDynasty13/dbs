@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function formatQuestionText(questionText) {
             // Match text inside both square brackets [] and round brackets ()
             return questionText.replace(/\[(.*?)\]/g, '<span class="bracket-text">[$1]</span>')
-                            .replace(/\((.*?)\)/g, '<span class="bracket-text">($1)</span>');
+                               .replace(/\((.*?)\)/g, '<span class="bracket-text">($1)</span>');
         }
     
         let formattedQuestion = formatQuestionText(questionData.question);
@@ -173,7 +173,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (questionData.disqualifyingOptions && questionData.disqualifyingOptions.includes(selectedOption.value)) {
-            displayCustomResult("Non-candidacy");
+            customMessage = ""
+            if(`${questionData.id}` == 2){ //for length
+                customMessage = "Based on how long you have had a Parkinson's diagnosis, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
+            }
+            if(`${questionData.id}` == 3){ //for cognitive conditions
+                customMessage = "DBS is not recommended for you because it can potentially worsen these conditions. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
+            }
+            displayCustomResult(customMessage);
+            console.log(`${questionData.id}`);
             return;
         }
 
