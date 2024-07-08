@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     let currentQuestionIndex = 0;
+    let points = 0;
     const progress = document.querySelector('.progress-bar');
     const animationDuration = 1000; // Duration of the animation in milliseconds
 
@@ -7,26 +8,38 @@ document.addEventListener('DOMContentLoaded', function() {
     const questions = [
         {
             id: 1,
-            question: "1. Have you been diagnosed with any of the following?",
-            options: ["Parkinson's", "Essential Tremor", "Dystonia", "None"],
-            multiple: true,
-            disqualifyingOptions: ["None"] // Disqualifying option for this question
+            question: "1. How many doses of levodopa are you taking?",
+            options: ["3 doses or less", "4 doses", "5 doses or greater"],
+            multiple: false
         },
         {
             id: 2,
-            question: "2. Are you a genius?",
-            options: ["yes", "no", "maybe", "so"],
+            question: "2. How long have you been diagnosed with Parkinson's?",
+            options: ["less than 1 year", "1-3 years", "more than 3 years"],
             multiple: false,
-            disqualifyingOptions: [] // No disqualifying options for this question
+            disqualifyingOptions: ["less than 1 year"]
         },
         {
             id: 3,
-            question: "3. Which programming languages do you know?",
-            options: ["JavaScript", "Python", "Java", "C++"],
-            multiple: true,
-            disqualifyingOptions: [] // No disqualifying options for this question
+            question: "3. Do you have dementia, psychosis or untreated depression?",
+            options: ["Yes", "No"],
+            multiple: false,
+            disqualifyingOptions: ["Yes"]
+        },
+        {
+            id: 4,
+            question: "4. Do you have tremors and dyskinesias (involuntary movements of the face, arms, legs or trunk) that limit activities in your daily life?",
+            options: ["Yes", "No"],
+            multiple: false,
+            points: { "Yes": 1, "No": 0 }
+        },
+        {
+            id: 5,
+            question: "5. Do you sometimes experience severe motor fluctuations (sudden and unpredictable recurrence of symptoms)?",
+            options: ["Yes", "No"],
+            multiple: false,
+            points: { "Yes": 1, "No": 0 }
         }
-        // Add more questions as needed
     ];
 
     // Initialize the form with questions
@@ -102,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const nextButton = questionDiv.querySelector('.next-button');
         if (nextButton) {
-            nextButton.addEventListener('click', nextQuestion);
+            nextButton.addEventListener('click', () => nextQuestion(questionData));
         }
 
         return questionDiv;
@@ -139,68 +152,85 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function nextQuestion() {
-        const questionElements = document.querySelectorAll('.question');
-        const currentQuestion = questionElements[currentQuestionIndex];
-        const disqualificationMessage = document.getElementById('disqualification-message');
-
-        // Check if an option is selected
-        const selectedOptions = currentQuestion.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
-        const selectedValues = Array.from(selectedOptions).map(option => option.value);
-
-        // Specific check for disqualifying options
-        const disqualifyingOptions = questions[currentQuestionIndex].disqualifyingOptions;
-
-        if (selectedValues.length === 0) {
-            alert('Please select an answer before proceeding to the next question.');
+    // Function to handle the next question
+    function nextQuestion(questionData) {
+        const selectedOption = document.querySelector(`input[name="question-${questionData.id}"]:checked`);
+        if (!selectedOption) {
+            alert('Please select an option.');
             return;
         }
 
-        const isDisqualified = selectedValues.some(value => disqualifyingOptions.includes(value));
-        if (isDisqualified) {
-            disqualificationMessage.innerHTML = 'Based on your answers, you may not qualify for Deep Brain Stimulation.';
-            currentQuestion.classList.add('fade-out');
-            setTimeout(() => {
-                showQuestion(questionElements.length - 1);
-            }, animationDuration);
-            return;
+        if (questionData.points) {
+            points += questionData.points[selectedOption.value];
         }
 
-        if (currentQuestion) {
-            currentQuestion.classList.add('fade-out');
-
-            setTimeout(() => {
-                if (currentQuestionIndex < questions.length - 1) {
-                    currentQuestionIndex++;
-                    showQuestion(currentQuestionIndex);
+        if (questionData.disqualifyingOptions && questionData.disqualifyingOptions.includes(selectedOption.value)) {
+            document.getElementById('disqualification-screen').style.display = 'block';
+            document.querySelectorAll('.question').forEach(questionElement => {
+                if (questionElement.id !== 'disqualification-screen') {
+                    questionElement.style.display = 'none';
                 }
-            }, animationDuration);
+            });
+            return;
+        }
+
+        if (currentQuestionIndex < questions.length - 1) {
+            showQuestion(currentQuestionIndex + 1);
         } else {
-            console.error('Current question element not found.');
+            determineCategory();
         }
     }
 
-    // Move to the previous question
+    // Function to handle the previous question
     function previousQuestion() {
-        const questionElements = document.querySelectorAll('.question');
-        const currentQuestion = questionElements[currentQuestionIndex];
-        console.log('Current Question Index:', currentQuestionIndex);
-        console.log('Current Question Element:', currentQuestion);
-
-        if (currentQuestion) {
-            currentQuestion.classList.add('fade-out');
-
-            setTimeout(() => {
-                if (currentQuestionIndex > 0) {
-                    currentQuestionIndex--;
-                    showQuestion(currentQuestionIndex);
-                }
-            }, animationDuration);
-        } else {
-            console.error('Current question element not found.');
+        if (currentQuestionIndex > 0) {
+            showQuestion(currentQuestionIndex - 1);
         }
     }
 
-    // Initialize the form when the DOM content is loaded
+    // Function to determine the category based on answers
+    function determineCategory() {
+        let dosesAnswer;
+        const dosesQuestion = questions.find(question => question.id === 1);
+        const dosesSelected = document.querySelector(`input[name="question-${dosesQuestion.id}"]:checked`);
+        if (dosesSelected) {
+            dosesAnswer = dosesSelected.value;
+        }
+
+        let category;
+        if (dosesAnswer === "3 doses or less") {
+            if (points === 0) {
+                category = "Cat 1: Patient may be controlled on the current treatment regimen. Continue monitoring the patient based on best medical treatment/clinical guidelines and your professional judgment.";
+            } else {
+                category = "Cat 2: Patient may not be controlled on the current treatment regimen. Additional benefits may be obtained from further treatment optimization and device-aided therapies may not be needed at this time. However, use your patient’s medical history, treatment preference, and your best medical judgment for treatment recommendation.";
+            }
+        } else if (dosesAnswer === "4 doses") {
+            if (points === 0) {
+                category = "Cat 1: Patient may be controlled on the current treatment regimen. Continue monitoring the patient based on best medical treatment/clinical guidelines and your professional judgment.";
+            } else {
+                category = "Cat 3: Patient may not be controlled on the current treatment regimen and may benefit from device-aided therapy. It is suggested that you evaluate eligibility for device-aided therapy based on patient’s medical history, treatment preference, and your best medical judgment for treatment recommendation.";
+            }
+        } else if (dosesAnswer === "5 doses or greater") {
+            category = "Cat 3: Patient may not be controlled on the current treatment regimen and may benefit from device-aided therapy. It is suggested that you evaluate eligibility for device-aided therapy based on patient’s medical history, treatment preference, and your best medical judgment for treatment recommendation.";
+        }
+
+        // Display the category to the user
+        const resultContainer = document.createElement('div');
+        resultContainer.classList.add('result');
+        resultContainer.innerHTML = `<h3>Result</h3><p>${category}</p>`;
+        document.getElementById('questions-container').appendChild(resultContainer);
+
+        // Hide all questions
+        const questionElements = document.querySelectorAll('.question');
+        questionElements.forEach(questionElement => {
+            questionElement.classList.add('fade-out');
+        });
+
+        // Show result container
+        resultContainer.classList.remove('fade-out');
+        resultContainer.classList.add('active');
+    }
+
+    // Initizalise the form when the DOM content is loaded
     initializeForm();
 });
