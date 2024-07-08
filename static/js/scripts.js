@@ -15,21 +15,21 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 2,
-            question: "2. Are you experiencing a total of greater than 2 hours daily with “off” time?",
+            question: "2. Are you experiencing a total of greater than 2 hours of daily “off” time (where Parkinson’s symptoms become more noticeable often after an initial benefit from oral treatment)?",
             options: ["Yes", "No"],
             multiple: false,
             disqualifyingOptions: ["No"]
         },
         {
             id: 3,
-            question: "3. Are you experiencing unpredictable fluctuations of motor symptoms with your current oral treatment?",
+            question: "3. Are you experiencing unpredictable fluctuations of motor symptoms (a sudden and unpredictable recurrence of symptoms generally unrelated to next dose timing) with your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
             disqualifyingOptions: ["No"]
         },
         {
             id: 4,
-            question: "4. Are you experiencing troublesome dyskinesia with your current oral treatment?",
+            question: "4. Are you experiencing troublesome dyskinesia (involuntary body movements that interfere with your daily living activities) due to your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
         },
