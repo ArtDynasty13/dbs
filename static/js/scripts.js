@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 5,
-            question: "5. Do you sometimes experience severe motor fluctuations (sudden and unpredictable recurrence of symptoms)?",
+            question: "5. Do you sometimes experience severe motor fluctuations (sudden and unpredictable recurrence of symptoms) despite your medication?",
             options: ["Yes", "No"],
             multiple: false,
             points: { "Yes": 1, "No": 0 }
