@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (questionData.disqualifyingOptions && questionData.disqualifyingOptions.includes(selectedOption.value)) {
-            customMessage = ""
+            customMessage = "Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire."
             if(`${questionData.id}` == 2){ //for length of diagnosis
                 //customMessage = "Based on how long you have had a Parkinson's diagnosis, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
             }
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    // Function to determine the category based on answers
+    // DEPRECIATED - FUNCTIONED FOR POINT SYSTEM 
     function determineCategory() {
         let dosesAnswer;
         const dosesQuestion = questions.find(question => question.id === 1);
