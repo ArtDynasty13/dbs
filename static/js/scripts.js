@@ -198,6 +198,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let dosesAnswer;
         const dosesQuestion = questions.find(question => question.id === 1);
         const dosesSelected = document.querySelector(`input[name="question-${dosesQuestion.id}"]:checked`);
+
+        cat_1 = "Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
+        cat_2 = "Based on your answers, you may not benefit from DBS at this time. Please ask your physician about potentially optimizing current treatment. Thank you for taking the time to complete this questionnaire."
+        cat_3 = "Based on your answers, you are a candidate for DBS at this time. Please consult a specialist about device-aided therapy. Thank you for taking the time to complete this questionnaire."
         if (dosesSelected) {
             dosesAnswer = dosesSelected.value;
         }
@@ -205,18 +209,18 @@ document.addEventListener('DOMContentLoaded', function() {
         let category;
         if (dosesAnswer === "3 doses or less") {
             if (points === 0) {
-                category = "Cat 1: Patient may be controlled on the current treatment regimen. Continue monitoring the patient based on best medical treatment/clinical guidelines and your professional judgment.";
+                category = cat_1;
             } else {
-                category = "Cat 2: Patient may not be controlled on the current treatment regimen. Additional benefits may be obtained from further treatment optimization and device-aided therapies may not be needed at this time. However, use your patient’s medical history, treatment preference, and your best medical judgment for treatment recommendation.";
+                category = cat_2;
             }
         } else if (dosesAnswer === "4 doses") {
             if (points === 0) {
-                category = "Cat 1: Patient may be controlled on the current treatment regimen. Continue monitoring the patient based on best medical treatment/clinical guidelines and your professional judgment.";
+                category = cat_1;
             } else {
-                category = "Cat 3: Patient may not be controlled on the current treatment regimen and may benefit from device-aided therapy. It is suggested that you evaluate eligibility for device-aided therapy based on patient’s medical history, treatment preference, and your best medical judgment for treatment recommendation.";
+                category = cat_3;
             }
         } else if (dosesAnswer === "5 doses or greater") {
-            category = "Cat 3: Patient may not be controlled on the current treatment regimen and may benefit from device-aided therapy. It is suggested that you evaluate eligibility for device-aided therapy based on patient’s medical history, treatment preference, and your best medical judgment for treatment recommendation.";
+            category = cat_3;
         }
 
         displayCustomResult(category);
