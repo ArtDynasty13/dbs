@@ -36,13 +36,18 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "4. Are you experiencing troublesome dyskinesia (involuntary body movements that interfere with your daily living activities) due to your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
+            disqualifyingOptions: ["No"]
         },
         {
             id: 5,
-            question: "Are you presently limited in performing one or more activities of daily living (eg, writing, walking, bathing, dressing, eating, toileting, etc.)?",
+            question: "Are you presently limited in performing one or more activities of daily living (eg: writing, walking, bathing, dressing, eating, toileting, etc.)?",
             options: ["Yes", "No"],
             multiple: false,
+            disqualifyingOptions: ["No"]
         },
+
+        //SECTION 2 -- deeper analysis of symptoms --
+
         {
             id: 6,
             question: "This next section assesses the frequency and severity of several symptoms, including key motor, non-motor symptoms, adverse events and functional impact.",
@@ -63,7 +68,11 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "How severe/troublesome are your motor fluctuations?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
-            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
+            skipIf: {
+                previousQuestionId: 7,
+                previousAnswer: "Never"
+            }
         },
         {
             id: 9,
@@ -79,7 +88,11 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "How severe/troublesome are your episodes of freezing of gait during 'off' time?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
-            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
+            skipIf: {
+                previousQuestionId: 9,
+                previousAnswer: "Never"
+            }
         },
         {
             id: 11,
@@ -95,7 +108,11 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "How severe/troublesome are your non-motor 'off' symptoms?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
-            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
+            skipIf: {
+                previousQuestionId: 11,
+                previousAnswer: "Never"
+            }
         },
         {
             id: 13,
@@ -111,7 +128,11 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "How severe/troublesome are your episodes of hallucinations/psychosis without insight?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
-            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
+            skipIf: {
+                previousQuestionId: 13,
+                previousAnswer: "Never"
+            }
         },
         {
             id: 15,
@@ -211,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
         questionDiv.classList.add('question');
         questionDiv.id = `question-${questionData.id}`;
     
-        // Function to wrap text inside brackets with a span for styling
+        // Function to wrap text inside brackets with a span for colour styling
         function formatQuestionText(questionText) {
             // Match text inside both square brackets [] and round brackets ()
             return questionText.replace(/\[(.*?)\]/g, '<span class="bracket-text">[$1]</span>')
@@ -379,6 +400,17 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+
+        // Check if the next question should be skipped
+        const nextQuestionData = questions[currentQuestionIndex + 1];
+        if (nextQuestionData && nextQuestionData.skipIf) {
+            const previousQuestionData = questions.find(question => question.id === nextQuestionData.skipIf.previousQuestionId);
+            const previousAnswer = document.querySelector(`input[name="question-${previousQuestionData.id}"]:checked`).value;
+            if (previousAnswer === nextQuestionData.skipIf.previousAnswer) {
+                currentQuestionIndex++;
+            }
+        }
+
         if (currentQuestionIndex < questions.length - 1) {
             showQuestion(currentQuestionIndex + 1);
         } else {
@@ -417,7 +449,7 @@ document.addEventListener('DOMContentLoaded', function() {
         //console.log("Impulse Control Disorder Score:", impulseControlScore);
             }
 
-    // DEPRECIATED - FUNCTIONED FOR POINT SYSTEM 
+    // DEPRECIATED - FUNCTIONED FOR PREVIOUS POINT SYSTEM 
     function determineCategory() {
         let dosesAnswer;
         const dosesQuestion = questions.find(question => question.id === 1);
