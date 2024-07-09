@@ -39,6 +39,140 @@ document.addEventListener('DOMContentLoaded', function() {
             options: ["Yes", "No"],
             multiple: false,
         },
+        {
+            id: 6,
+            question: "This section assesses the frequency and severity of several symptoms, including key motor, non-motor symptoms, adverse events and functional impact.",
+            options: ["I understand"],
+            mutliple: false,
+        },
+        {
+            id: 7,
+            section: "MOTOR FLUCTUATIONS",
+            question: "How often are your motor fluctuations unpredictable?",
+            options: ["Never", "Rarely (≤1/week)", "Sometimes (several times per week)", "Most/All the time (daily)"],
+            multiple: false,
+            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 }
+        },
+        {
+            id: 8,
+            section: "MOTOR FLUCTUATIONS",
+            question: "How severe/troublesome are your motor fluctuations?",
+            options: ["Mild", "Moderate", "Severe"],
+            multiple: false,
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+        },
+        {
+            id: 9,
+            section: "FREEZING OF GAIT",
+            question: "How often do you experience freezing of gait during 'off' time?",
+            options: ["Never", "Rarely (≤1/week)", "Sometimes (several times per week)", "Most/All the time (daily)"],
+            multiple: false,
+            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 }
+        },
+        {
+            id: 10,
+            section: "FREEZING OF GAIT",
+            question: "How severe/troublesome are your episodes of freezing of gait during 'off' time?",
+            options: ["Mild", "Moderate", "Severe"],
+            multiple: false,
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+        },
+        {
+            id: 11,
+            section: "NON-MOTOR SYMPTOMS",
+            question: "How often do you experience non-motor 'off' symptoms (e.g., anxiety, pain, mood changes, sleep issues)?",
+            options: ["Never", "Rarely (≤1/week)", "Sometimes (several times per week)", "Most/All the time (daily)"],
+            multiple: false,
+            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 }
+        },
+        {
+            id: 12,
+            section: "NON-MOTOR SYMPTOMS",
+            question: "How severe/troublesome are your non-motor 'off' symptoms?",
+            options: ["Mild", "Moderate", "Severe"],
+            multiple: false,
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+        },
+        {
+            id: 13,
+            section: "HALLUCINATION/PSYCHOSIS",
+            question: "How often do you experience hallucinations/psychosis without insight?",
+            options: ["Never", "Rarely (≤1/week)", "Sometimes (several times per week)", "Most/All the time (daily)"],
+            multiple: false,
+            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 }
+        },
+        {
+            id: 14,
+            section: "HALLUCINATION/PSYCHOSIS",
+            question: "How severe/troublesome are your episodes of hallucinations/psychosis without insight?",
+            options: ["Mild", "Moderate", "Severe"],
+            multiple: false,
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+        },
+        {
+            id: 15,
+            section: "OFF-TIME",
+            question: "How severe/troublesome are your 'off' time periods with current oral treatment?",
+            options: ["Mild", "Moderate", "Severe"],
+            multiple: false,
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+        },
+        {
+            id: 16,
+            section: "DYSKINESIA",
+            question: "How often do you experience troublesome dyskinesia?",
+            options: ["Never", "Rarely (≤1/week)", "Sometimes (several times per week)", "Most/All the time (daily)"],
+            multiple: false,
+            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 }
+        },
+        {
+            id: 17,
+            section: "ACTIVITIES OF DAILY LIVING (ADL)",
+            question: "What is your level of independence in activities of daily living?",
+            options: ["Independent in all activities", "Independent in most activities", "Needs assistance/dependent in some activities", "Totally dependent in all activities"],
+            multiple: false,
+            points: { "Independent in all activities": 0, "Independent in most activities": 1, "Needs assistance/dependent in some activities": 2, "Totally dependent in all activities": 3 }
+        },
+        {
+            id: 18,
+            section: "FALLS",
+            question: "How many falls do you experience per month?",
+            options: ["No falls", "1 fall", "2 or more falls"],
+            multiple: false,
+            points: { "No falls": 0, "1 fall": 1, "2 or more falls": 2 }
+        },
+        {
+            id: 19,
+            section: "DYSTONIA",
+            question: "How often do you experience dystonia with pain?",
+            options: ["Never", "Rarely (≤1/week)", "Sometimes (several times per week)", "Most/All the time (daily)"],
+            multiple: false,
+            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 }
+        },
+        {
+            id: 20,
+            section: "DYSTONIA",
+            question: "How severe/troublesome is your dystonia with pain?",
+            options: ["Mild", "Moderate", "Severe"],
+            multiple: false,
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+        },
+        {
+            id: 21,
+            section: "IMPULSE CONTROL DISORDER",
+            question: "How often do you experience impulse control disorder?",
+            options: ["Never", "Rarely (≤1/week)", "Sometimes (several times per week)", "Most/All the time (daily)"],
+            multiple: false,
+            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 }
+        },
+        {
+            id: 22,
+            section: "IMPULSE CONTROL DISORDER",
+            question: "How severe/troublesome is the impairment due to your impulse control disorder?",
+            options: ["Mild", "Moderate", "Severe"],
+            multiple: false,
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+        }
     ];
 
     // Initialize the form with questions
