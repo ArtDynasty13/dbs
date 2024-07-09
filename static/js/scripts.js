@@ -308,30 +308,34 @@ document.addEventListener('DOMContentLoaded', function() {
         switch (questionData.section) {
             case "MOTOR FLUCTUATIONS":
                 if (questionData.id === 7) {
-                    motorFluctuationsScore = questionData.points[selectedOption.value];
+                    score1 = questionData.points[selectedOption.value];
                 } else if (questionData.id === 8) {
-                    motorFluctuationsScore *= questionData.points[selectedOption.value];
+                    score2 = questionData.points[selectedOption.value];
+                    motorFluctuationsScore = score1 * score2;
                 }
                 break;
             case "FREEZING OF GAIT":
                 if (questionData.id === 9) {
-                    freezingOfGaitScore = questionData.points[selectedOption.value];
+                    score1 = questionData.points[selectedOption.value];
                 } else if (questionData.id === 10) {
-                    freezingOfGaitScore *= questionData.points[selectedOption.value];
+                    score2 = questionData.points[selectedOption.value];
+                    freezingOfGaitScore = score1 * score2;
                 }
                 break;
             case "NON-MOTOR SYMPTOMS":
                 if (questionData.id === 11) {
-                    nonMotorSymptomsScore = questionData.points[selectedOption.value];
+                    score1 = questionData.points[selectedOption.value];
                 } else if (questionData.id === 12) {
-                    nonMotorSymptomsScore *= questionData.points[selectedOption.value];
+                    score2 = questionData.points[selectedOption.value];
+                    nonMotorSymptomsScore = score1 * score2;
                 }
                 break;
             case "HALLUCINATION/PSYCHOSIS":
                 if (questionData.id === 13) {
-                    hallucinationScore = questionData.points[selectedOption.value];
+                    score1 = questionData.points[selectedOption.value];
                 } else if (questionData.id === 14) {
-                    hallucinationScore *= questionData.points[selectedOption.value];
+                    score2 = questionData.points[selectedOption.value];
+                    hallucinationScore = score1 * score2;
                 }
                 break;
             case "OFF-TIME":
@@ -348,16 +352,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case "DYSTONIA":
                 if (questionData.id === 19) {
-                    dystoniaScore = questionData.points[selectedOption.value];
+                    score1 = questionData.points[selectedOption.value];
                 } else if (questionData.id === 20) {
-                    dystoniaScore *= questionData.points[selectedOption.value];
+                    score2 = questionData.points[selectedOption.value];
+                    dystoniaScore = score1 * score2;
                 }
                 break;
             case "IMPULSE CONTROL DISORDER":
                 if (questionData.id === 21) {
-                    impulseControlScore = questionData.points[selectedOption.value];
+                    score1 = questionData.points[selectedOption.value];
                 } else if (questionData.id === 22) {
-                    impulseControlScore *= questionData.points[selectedOption.value];
+                    score2 = questionData.points[selectedOption.value];
+                    impulseControlScore = score1 * score2;
                 }
                 break;
             default:
