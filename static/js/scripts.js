@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     let currentQuestionIndex = 0;
     let points = 0;
+    let motorFluctuationsScore = 0;
+    let freezingOfGaitScore = 0;
+    let nonMotorSymptomsScore = 0;
+    let hallucinationScore = 0;
     const progress = document.querySelector('.progress-bar');
     const animationDuration = 1000; // Duration of the animation in milliseconds
 
@@ -41,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 6,
-            question: "This section assesses the frequency and severity of several symptoms, including key motor, non-motor symptoms, adverse events and functional impact.",
+            question: "This next section assesses the frequency and severity of several symptoms, including key motor, non-motor symptoms, adverse events and functional impact.",
             options: ["I understand"],
             mutliple: false,
         },
@@ -301,18 +305,69 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        if (questionData.points) {
-            points += questionData.points[selectedOption.value];
+        switch (questionData.section) {
+            case "MOTOR FLUCTUATIONS":
+                if (questionData.id === 7) {
+                    motorFluctuationsScore = questionData.points[selectedOption.value];
+                } else if (questionData.id === 8) {
+                    motorFluctuationsScore *= questionData.points[selectedOption.value];
+                }
+                break;
+            case "FREEZING OF GAIT":
+                if (questionData.id === 9) {
+                    freezingOfGaitScore = questionData.points[selectedOption.value];
+                } else if (questionData.id === 10) {
+                    freezingOfGaitScore *= questionData.points[selectedOption.value];
+                }
+                break;
+            case "NON-MOTOR SYMPTOMS":
+                if (questionData.id === 11) {
+                    nonMotorSymptomsScore = questionData.points[selectedOption.value];
+                } else if (questionData.id === 12) {
+                    nonMotorSymptomsScore *= questionData.points[selectedOption.value];
+                }
+                break;
+            case "HALLUCINATION/PSYCHOSIS":
+                if (questionData.id === 13) {
+                    hallucinationScore = questionData.points[selectedOption.value];
+                } else if (questionData.id === 14) {
+                    hallucinationScore *= questionData.points[selectedOption.value];
+                }
+                break;
+            case "OFF-TIME":
+                offTimeScore = questionData.points[selectedOption.value];
+                break;
+            case "DYSKINESIA":
+                dyskinesiaScore = questionData.points[selectedOption.value];
+                break;
+            case "ACTIVITIES OF DAILY LIVING (ADL)":
+                adlImpairmentScore = questionData.points[selectedOption.value];
+                break;
+            case "FALLS":
+                fallsScore = questionData.points[selectedOption.value];
+                break;
+            case "DYSTONIA":
+                if (questionData.id === 19) {
+                    dystoniaScore = questionData.points[selectedOption.value];
+                } else if (questionData.id === 20) {
+                    dystoniaScore *= questionData.points[selectedOption.value];
+                }
+                break;
+            case "IMPULSE CONTROL DISORDER":
+                if (questionData.id === 21) {
+                    impulseControlScore = questionData.points[selectedOption.value];
+                } else if (questionData.id === 22) {
+                    impulseControlScore *= questionData.points[selectedOption.value];
+                }
+                break;
+            default:
+                break;
         }
+
+        printScores()
 
         if (questionData.disqualifyingOptions && questionData.disqualifyingOptions.includes(selectedOption.value)) {
             customMessage = "Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire."
-            if(`${questionData.id}` == 2){ //for length of diagnosis
-                //customMessage = "Based on how long you have had a Parkinson's diagnosis, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
-            }
-            if(`${questionData.id}` == 3){ //for cognitive conditions
-                //customMessage = "DBS is not recommended because it can potentially worsen these conditions. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
-            }
             displayCustomResult(customMessage);
             console.log(`${questionData.id}`);
             return;
@@ -341,6 +396,20 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
     }
+
+    function printScores()
+    {
+        console.log("Motor Fluctuations Score:", motorFluctuationsScore);
+        console.log("Freezing of Gait Score:", freezingOfGaitScore);
+        console.log("Non-Motor Symptoms Score:", nonMotorSymptomsScore);
+        console.log("Hallucination/Psychosis Score:", hallucinationScore);
+        //console.log("Off-Time Score:", offTimeScore);
+        //console.log("Dyskinesia Score:", dyskinesiaScore);
+        //console.log("ADL Impairment Score:", adlImpairmentScore);
+        //console.log("Falls Score:", fallsScore);
+        //console.log("Dystonia Score:", dystoniaScore);
+        //console.log("Impulse Control Disorder Score:", impulseControlScore);
+            }
 
     // DEPRECIATED - FUNCTIONED FOR POINT SYSTEM 
     function determineCategory() {
