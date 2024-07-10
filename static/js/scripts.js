@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Define your questions data
     const questions = [
         {
+            id: 0,
+            question: "This simple survey is designed to assess your suitability for consulting with a Deep Brain Stimulation (DBS) specialist for Parkinson's disease.",
+            options: ["I understand"],
+            multiple: false
+        },
+        {
             id: 1,
             question: "1. Are you taking 5 doses or greater of levodopa?",
             options: ["Yes", "No"],
@@ -29,21 +35,21 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "3. Are you experiencing unpredictable fluctuations of motor symptoms (a sudden and unpredictable recurrence of symptoms generally unrelated to next dose timing) with your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
-            disqualifyingOptions: ["No"]
+            //disqualifyingOptions: ["No"]
         },
         {
             id: 4,
             question: "4. Are you experiencing troublesome dyskinesia (involuntary body movements that interfere with your daily living activities) due to your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
-            disqualifyingOptions: ["No"]
+            //disqualifyingOptions: ["No"]
         },
         {
             id: 5,
             question: "Are you presently limited in performing one or more activities of daily living (eg: writing, walking, bathing, dressing, eating, toileting, etc.)?",
             options: ["Yes", "No"],
             multiple: false,
-            disqualifyingOptions: ["No"]
+            //disqualifyingOptions: ["No"]
         },
 
         //SECTION 2 -- deeper analysis of symptoms --
@@ -60,7 +66,11 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "How often are your motor fluctuations unpredictable?",
             options: ["Never", "Rarely (≤1/week)", "Sometimes (several times per week)", "Most/All the time (daily)"],
             multiple: false,
-            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 }
+            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 },
+            skipIf: {
+                previousQuestionId: 3,
+                previousAnswer: "No"
+            }
         },
         {
             id: 8,
@@ -70,8 +80,8 @@ document.addEventListener('DOMContentLoaded', function() {
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
             skipIf: {
-                previousQuestionId: 7,
-                previousAnswer: "Never"
+                previousQuestionId: 3,
+                previousAnswer: "No"
             }
         },
         {
@@ -318,7 +328,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Function to handle the next question
     function nextQuestion(questionData) {
         const selectedOption = document.querySelector(`input[name="question-${questionData.id}"]:checked`);
         if (!selectedOption) {
@@ -399,24 +408,45 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(`${questionData.id}`);
             return;
         }
-
-
-        // Check if the next question should be skipped
-        const nextQuestionData = questions[currentQuestionIndex + 1];
-        if (nextQuestionData && nextQuestionData.skipIf) {
-            const previousQuestionData = questions.find(question => question.id === nextQuestionData.skipIf.previousQuestionId);
-            const previousAnswer = document.querySelector(`input[name="question-${previousQuestionData.id}"]:checked`).value;
-            if (previousAnswer === nextQuestionData.skipIf.previousAnswer) {
-                currentQuestionIndex++;
-            }
-        }
-
-        if (currentQuestionIndex < questions.length - 1) {
-            showQuestion(currentQuestionIndex + 1);
+    
+        // Check if there's a question to skip based on current question's skipIf condition
+        const nextIndex = findNextValidQuestion(currentQuestionIndex, selectedOption.value);
+        if (nextIndex !== null) {
+            showQuestion(nextIndex);
         } else {
             determineCategory();
         }
     }
+    
+    function findNextValidQuestion(startIndex, answerValue) {
+        // Start searching from the next question after startIndex
+        for (let i = startIndex + 1; i < questions.length; i++) {
+            const question = questions[i];
+    
+            if (question.skipIf) {
+                const { previousQuestionId, previousAnswer } = question.skipIf;
+                const previousQuestion = questions.find(q => q.id === previousQuestionId);
+                const previousAnswerValue = document.querySelector(`input[name="question-${previousQuestion.id}"]:checked`).value;
+    
+                if (previousAnswerValue === previousAnswer) {
+                    // Continue to skip this question
+                    continue;
+                }
+            }
+    
+            // Check if this question should be skipped based on current answer
+            if (question.skipIf && question.skipIf.previousAnswer === answerValue) {
+                continue;
+            }
+    
+            // Return index of the first valid question found
+            return i;
+        }
+    
+        // Return null if no valid question found
+        return null;
+    }
+    
 
     // Function to handle the previous question
     function previousQuestion() {
