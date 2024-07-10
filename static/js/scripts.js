@@ -448,10 +448,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
 
-    // Function to handle the previous question
     function previousQuestion() {
-        if (currentQuestionIndex > 0) {
-            showQuestion(currentQuestionIndex - 1);
+        // Find the index of the last answered question before the current index
+        for (let i = currentQuestionIndex - 1; i >= 0; i--) {
+            const questionElement = document.getElementById(`question-${i}`);
+            const selectedOption = questionElement.querySelector(`input[name="question-${i}"]:checked`);
+            if (selectedOption) {
+                showQuestion(i);
+                return;
+            }
         }
     }
 
