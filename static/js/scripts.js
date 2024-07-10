@@ -18,28 +18,28 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 1,
-            question: "1. Are you taking 5 doses or greater of levodopa?",
+            question: "Are you taking 5 doses or greater of levodopa?",
             options: ["Yes", "No"],
             multiple: false,
             disqualifyingOptions: ["No"]
         },
         {
             id: 2,
-            question: "2. Are you experiencing a total of greater than 2 hours of daily “off” time (where Parkinson’s symptoms become more noticeable often after an initial benefit from oral treatment)?",
+            question: "Are you experiencing a total of greater than 2 hours of daily “off” time (where Parkinson’s symptoms become more noticeable often after an initial benefit from oral treatment)?",
             options: ["Yes", "No"],
             multiple: false,
             disqualifyingOptions: ["No"]
         },
         {
             id: 3,
-            question: "3. Are you experiencing unpredictable fluctuations of motor symptoms (a sudden and unpredictable recurrence of symptoms generally unrelated to next dose timing) with your current oral treatment?",
+            question: "Are you experiencing unpredictable fluctuations of motor symptoms (a sudden and unpredictable recurrence of symptoms generally unrelated to next dose timing) with your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
             //disqualifyingOptions: ["No"]
         },
         {
             id: 4,
-            question: "4. Are you experiencing troublesome dyskinesia (involuntary body movements that interfere with your daily living activities) due to your current oral treatment?",
+            question: "Are you experiencing troublesome dyskinesia (involuntary body movements that interfere with your daily living activities) due to your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
             //disqualifyingOptions: ["No"]
