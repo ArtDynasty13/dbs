@@ -344,7 +344,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             console.log(levodopaDoses);
             const result = determineCategory(responses, levodopaDoses);
-            displayCustomResult(result.message);
+            console.log(result);
+            if(!result.category === 3)
+            {
+                displayCustomResult(result.message);
+            }
         }
 
         //add responses to holder
