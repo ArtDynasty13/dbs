@@ -147,7 +147,11 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "How severe/troublesome are your 'off' time periods with current oral treatment?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
-            points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+            points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
+            skipIf: {
+                previousQuestionId: 2,
+                previousAnswer: "No"
+            }
         },
         {
             id: 16,
@@ -155,7 +159,11 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "How often do you experience troublesome dyskinesia?",
             options: ["Never", "Rarely (≤1/week)", "Sometimes (several times per week)", "Most/All the time (daily)"],
             multiple: false,
-            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 }
+            points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 },
+            skipIf: {
+                previousQuestionId: 4,
+                previousAnswer: "No"
+            }
         },
         {
             id: 17,
@@ -163,7 +171,11 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "What is your level of independence in activities of daily living?",
             options: ["Independent in all activities", "Independent in most activities", "Needs assistance/dependent in some activities", "Totally dependent in all activities"],
             multiple: false,
-            points: { "Independent in all activities": 0, "Independent in most activities": 1, "Needs assistance/dependent in some activities": 2, "Totally dependent in all activities": 3 }
+            points: { "Independent in all activities": 0, "Independent in most activities": 1, "Needs assistance/dependent in some activities": 2, "Totally dependent in all activities": 3 },
+            skipIf: {
+                previousQuestionId: 5,
+                previousAnswer: "No"
+            }
         },
         {
             id: 18,
@@ -331,7 +343,12 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Please select an option.');
             return;
         }
+        if(currentQuestionIndex === questions[questions.length - 1].id)
+        {
+            displayCustomResult("Motor Fluctuation Score:", motorFluctuationsScore)
+        }
 
+        //5th question is last in SECTION 1
         if(currentQuestionIndex === 5) {
             let levodopaDoses = responses[1];
                 // Extract numerical value from the string using a regular expression
@@ -419,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
         }
 
-        printScores()
+        //printScores()
 
         if (questionData.disqualifyingOptions && questionData.disqualifyingOptions.includes(selectedOption.value)) {
             customMessage = "Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire."
@@ -517,6 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 message: "CAT 1 - Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire."
             }
         }
+        //Currently this code does NOT run, I just proceed to the next section
         if (isAnyResponseYes(responses) && levodopaDoses > 3) {
             return {
               category: 3,
@@ -528,7 +546,6 @@ document.addEventListener('DOMContentLoaded', function() {
             category: 2,
             message: "CAT 2 - Based on your answers, you may not benefit from DBS at this time. Please ask your physician about potentially optimizing current treatment. Thank you for taking the time to complete this questionnaire."
           };
-
     }
 
     // Initialize the form when the DOM content is loaded
