@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const progress = document.querySelector('.progress-bar');
     const animationDuration = 1000; // Duration of the animation in milliseconds
 
+    const responses = {};
+
     // Define your questions data
     const questions = [
         {
@@ -18,38 +20,33 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 1,
-            question: "Are you taking 5 doses or greater of levodopa?",
-            options: ["Yes", "No"],
-            multiple: false,
-            disqualifyingOptions: ["No"]
+            question: "How many daily doses of levodopa does the patient report taking?",
+            options: ["≤3 doses", "4 doses", "≥5 doses"],
+            multiple: false
         },
         {
             id: 2,
             question: "Are you experiencing a total of greater than 2 hours of daily “off” time (where Parkinson’s symptoms become more noticeable often after an initial benefit from oral treatment)?",
             options: ["Yes", "No"],
             multiple: false,
-            disqualifyingOptions: ["No"]
         },
         {
             id: 3,
             question: "Are you experiencing unpredictable fluctuations of motor symptoms (a sudden and unpredictable recurrence of symptoms generally unrelated to next dose timing) with your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
-            //disqualifyingOptions: ["No"]
         },
         {
             id: 4,
             question: "Are you experiencing troublesome dyskinesia (involuntary body movements that interfere with your daily living activities) due to your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
-            //disqualifyingOptions: ["No"]
         },
         {
             id: 5,
             question: "Are you presently limited in performing one or more activities of daily living (eg: writing, walking, bathing, dressing, eating, toileting, etc.)?",
             options: ["Yes", "No"],
             multiple: false,
-            //disqualifyingOptions: ["No"]
         },
 
         //SECTION 2 -- deeper analysis of symptoms --
@@ -335,6 +332,24 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        if(currentQuestionIndex === 5) {
+            let levodopaDoses = responses[1];
+                // Extract numerical value from the string using a regular expression
+            const matches = levodopaDoses.match(/\d+/);
+            if (matches) {
+                levodopaDoses = parseInt(matches[0], 10);
+            } else {
+                // Handle case where no number is found, if necessary
+                levodopaDoses = 0; // Default value or handle as needed
+            }
+            console.log(levodopaDoses);
+            const result = determineCategory(responses, levodopaDoses);
+            displayCustomResult(result.message);
+        }
+
+        //add responses to holder
+        responses[questionData.id] = selectedOption.value;
+
         switch (questionData.section) {
             case "MOTOR FLUCTUATIONS":
                 if (questionData.id === 7) {
@@ -484,37 +499,32 @@ document.addEventListener('DOMContentLoaded', function() {
         //console.log("Impulse Control Disorder Score:", impulseControlScore);
             }
 
+    function isAnyResponseYes(responses)
+    {
+        const values = Object.values(responses);
+        return values.some(response => response === 'Yes');
+    }
     // DEPRECIATED - FUNCTIONED FOR PREVIOUS POINT SYSTEM 
-    function determineCategory() {
-        let dosesAnswer;
-        const dosesQuestion = questions.find(question => question.id === 1);
-        const dosesSelected = document.querySelector(`input[name="question-${dosesQuestion.id}"]:checked`);
-
-        cat_1 = "Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
-        cat_2 = "Based on your answers, you may not benefit from DBS at this time. Please ask your physician about potentially optimizing current treatment. Thank you for taking the time to complete this questionnaire."
-        cat_3 = "Based on your answers, you are a candidate for DBS at this time. Please consult a specialist about device-aided therapy. Thank you for taking the time to complete this questionnaire."
-        if (dosesSelected) {
-            dosesAnswer = dosesSelected.value;
-        }
-
-        let category;
-        if (dosesAnswer === "3 doses or less") {
-            if (points === 0) {
-                category = cat_1;
-            } else {
-                category = cat_2;
+    function determineCategory(responses, levodopaDoses) {
+        if (!isAnyResponseYes(responses) && levodopaDoses < 4)
+        {
+            return {
+                category: 1,
+                message: "CAT 1 - Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire."
             }
-        } else if (dosesAnswer === "4 doses") {
-            if (points === 0) {
-                category = cat_1;
-            } else {
-                category = cat_3;
-            }
-        } else if (dosesAnswer === "5 doses or greater") {
-            category = cat_3;
         }
+        if (isAnyResponseYes(responses) && levodopaDoses > 3) {
+            return {
+              category: 3,
+              message: "CAT 3 - Based on your answers, you are a candidate for DBS at this time. Please consult a specialist about device-aided therapy. Please proceed to Section 2."
+            };
+          }
+        
+          return {
+            category: 2,
+            message: "CAT 2 - Based on your answers, you may not benefit from DBS at this time. Please ask your physician about potentially optimizing current treatment. Thank you for taking the time to complete this questionnaire."
+          };
 
-        displayCustomResult(category);
     }
 
     // Initialize the form when the DOM content is loaded
