@@ -359,10 +359,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Handle case where no number is found, if necessary
                 levodopaDoses = 0; // Default value or handle as needed
             }
-            console.log(levodopaDoses);
             const result = determineCategory(responses, levodopaDoses);
-            console.log(result);
-            if(!result.category === 3)
+            console.log(result.category)
+            if(result.category !== 3)
             {
                 displayCustomResult(result.message);
             }
@@ -525,28 +524,40 @@ document.addEventListener('DOMContentLoaded', function() {
         const values = Object.values(responses);
         return values.some(response => response === 'Yes');
     }
-    // DEPRECIATED - FUNCTIONED FOR PREVIOUS POINT SYSTEM 
+
     function determineCategory(responses, levodopaDoses) {
-        if (!isAnyResponseYes(responses) && levodopaDoses < 4)
-        {
+        // Ensure all branches return a value
+        if (levodopaDoses !== 5 && !isAnyResponseYes(responses)) {
             return {
                 category: 1,
                 message: "CAT 1 - Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire."
-            }
-        }
-        //Currently this code does NOT run, I just proceed to the next section
-        if (isAnyResponseYes(responses) && levodopaDoses > 3) {
-            return {
-              category: 3,
-              message: "CAT 3 - Based on your answers, you are a candidate for DBS at this time. Please consult a specialist about device-aided therapy. Please proceed to Section 2."
             };
-          }
-        
-          return {
-            category: 2,
-            message: "CAT 2 - Based on your answers, you may not benefit from DBS at this time. Please ask your physician about potentially optimizing current treatment. Thank you for taking the time to complete this questionnaire."
-          };
-    }
+        } else if (levodopaDoses !== 5 && isAnyResponseYes(responses)) {
+            if (levodopaDoses === 3) {
+                return {
+                    category: 2,
+                    message: "CAT 2 - Based on your answers, you may not benefit from DBS at this time. Please ask your physician about potentially optimizing current treatment. Thank you for taking the time to complete this questionnaire."
+                };
+            } else { // levodopaDoses is 4 and one yes
+                return {
+                    category: 3, //message does not display, will just proceed to next question
+                    //message: "CAT 3 - Based on your answers, you are a candidate for DBS at this time. Please consult a specialist about device-aided therapy. Please proceed to Section 2."
+                };
+            }
+        } else if (levodopaDoses === 5) {
+            return {
+                category: 3,//message does not display, will just proceed to next question
+                //message: "CAT 3 - Based on your answers, you are a candidate for DBS at this time. Please consult a specialist about device-aided therapy. Please proceed to Section 2."
+            };
+        }
+
+        // Default return value to handle unexpected cases
+        return {
+            category: -1,
+            message: "An unexpected error occurred. Please try again."
+        };
+}
+
 
     // Initialize the form when the DOM content is loaded
     initializeForm();
