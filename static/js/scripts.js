@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let freezingOfGaitScore = 0;
     let nonMotorSymptomsScore = 0;
     let hallucinationScore = 0;
+    let offTimeScore = 0;
+    let dyskinesiaScore = 0;
+    let adlImpairmentScore = 0;
+    let fallsScore = 0;
+    let dystoniaScore = 0;
+    let impulseControlScore = 0;
     const progress = document.querySelector('.progress-bar');
     const animationDuration = 1000; // Duration of the animation in milliseconds
 
@@ -20,13 +26,13 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 1,
-            question: "How many daily doses of levodopa does the patient report taking?",
+            question: "How many daily doses of levodopa are you taking?",
             options: ["≤3 doses", "4 doses", "≥5 doses"],
             multiple: false
         },
         {
             id: 2,
-            question: "Are you experiencing a total of greater than 2 hours of daily “off” time (where Parkinson’s symptoms become more noticeable often after an initial benefit from oral treatment)?",
+            question: "Are you experiencing a total of greater than 2 hours of daily “off-time“ (where Parkinson’s symptoms become more noticeable often after an initial benefit from oral treatment)?",
             options: ["Yes", "No"],
             multiple: false,
         },
@@ -38,13 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 4,
-            question: "Are you experiencing troublesome dyskinesia (involuntary body movements that interfere with your daily living activities) due to your current oral treatment?",
+            question: "Are you experiencing troublesome dyskinesia (involuntary body movements that interfere with your daily living activities) with your current oral treatment?",
             options: ["Yes", "No"],
             multiple: false,
         },
         {
             id: 5,
-            question: "Are you presently limited in performing one or more activities of daily living (eg: writing, walking, bathing, dressing, eating, toileting, etc.)?",
+            question: "Are you presently limited in performing one or more activities of daily living (eg: walking, bathing, dressing, eating, toileting, etc.)?",
             options: ["Yes", "No"],
             multiple: false,
         },
@@ -84,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 9,
             section: "FREEZING OF GAIT",
-            question: "How often do you experience freezing of gait during 'off' time?",
+            question: "How often do you experience freezing of gait during “off-time“?",
             options: ["Never", "Rarely (≤1/week)", "Sometimes (several times per week)", "Most/All the time (daily)"],
             multiple: false,
             points: { "Never": 0, "Rarely (≤1/week)": 1, "Sometimes (several times per week)": 2, "Most/All the time (daily)": 3 }
@@ -92,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 10,
             section: "FREEZING OF GAIT",
-            question: "How severe/troublesome are your episodes of freezing of gait during 'off' time?",
+            question: "How severe/troublesome are your episodes of freezing of gait during “off-time“?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
@@ -144,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 15,
             section: "OFF-TIME",
-            question: "How severe/troublesome are your 'off' time periods with current oral treatment?",
+            question: "How severe/troublesome are your “off-time“ periods with current oral treatment?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
@@ -216,6 +222,18 @@ document.addEventListener('DOMContentLoaded', function() {
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
+        },
+        {
+            id: 23,
+            question: "This is the end of the survey. You may return to any previous questions before submitting.",
+            options: ["I understand"],
+            multiple: false
+        },
+        {
+            id: 24,
+            question: "",
+            options: [""],
+            multiple: false
         }
     ];
 
@@ -343,10 +361,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Please select an option.');
             return;
         }
-        if(currentQuestionIndex === questions[questions.length - 1].id)
-        {
-            displayCustomResult("Motor Fluctuation Score:", motorFluctuationsScore)
-        }
 
         //5th question is last in SECTION 1
         if(currentQuestionIndex === 5) {
@@ -360,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 levodopaDoses = 0; // Default value or handle as needed
             }
             const result = determineCategory(responses, levodopaDoses);
-            console.log(result.category)
+            //console.log(result.category)
             if(result.category !== 3)
             {
                 displayCustomResult(result.message);
@@ -451,6 +465,11 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             determineCategory();
         }
+
+        //IF ON LAST QUESTION, PRINT RESULTS
+        if(currentQuestionIndex === questions[questions.length - 1].id){
+                displayAllScores();
+        }
     }
     
     function findNextValidQuestion(startIndex, answerValue) {
@@ -505,20 +524,6 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    function printScores()
-    {
-        console.log("Motor Fluctuations Score:", motorFluctuationsScore);
-        console.log("Freezing of Gait Score:", freezingOfGaitScore);
-        console.log("Non-Motor Symptoms Score:", nonMotorSymptomsScore);
-        console.log("Hallucination/Psychosis Score:", hallucinationScore);
-        //console.log("Off-Time Score:", offTimeScore);
-        //console.log("Dyskinesia Score:", dyskinesiaScore);
-        //console.log("ADL Impairment Score:", adlImpairmentScore);
-        //console.log("Falls Score:", fallsScore);
-        //console.log("Dystonia Score:", dystoniaScore);
-        //console.log("Impulse Control Disorder Score:", impulseControlScore);
-            }
-
     function isAnyResponseYes(responses)
     {
         const values = Object.values(responses);
@@ -556,6 +561,24 @@ document.addEventListener('DOMContentLoaded', function() {
             category: -1,
             message: "An unexpected error occurred. Please try again."
         };
+}
+function displayAllScores() {
+    const questionsContainer = document.getElementById('questions-container');
+    questionsContainer.innerHTML = `
+        <div class="custom-result">
+            <h3>Survey Results</h3>
+            <p>Motor Fluctuations Score: ${motorFluctuationsScore}</p>
+            <p>Freezing of Gait Score: ${freezingOfGaitScore}</p>
+            <p>Non-Motor Symptoms Score: ${nonMotorSymptomsScore}</p>
+            <p>Hallucination/Psychosis Score: ${hallucinationScore}</p>
+            <p>Off-Time Score: ${offTimeScore}</p>
+            <p>Dyskinesia Score: ${dyskinesiaScore}</p>
+            <p>ADL Impairment Score: ${adlImpairmentScore}</p>
+            <p>Falls Score: ${fallsScore}</p>
+            <p>Dystonia Score: ${dystoniaScore}</p>
+            <p>Impulse Control Disorder Score: ${impulseControlScore}</p>
+        </div>
+    `;
 }
 
 
