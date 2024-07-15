@@ -3,7 +3,7 @@
 /* Font face for Inter Variable */
 @font-face {
     font-family: 'Inter Variable';
-    src: url('/dbs/static/fonts/Inter-VariableFont_slnt,wght.ttf') format('truetype');
+    src: url('/dbs/static/fonts/static/Inter-VariableFont_slnt,wght.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
