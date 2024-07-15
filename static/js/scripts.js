@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const questions = [
         {
             id: 0,
-            question: "This simple survey is designed to assess your suitability for consulting with a Deep Brain Stimulation (DBS) specialist for Parkinson's disease.",
+            question: "This simple survey is designed to assess your suitability for consulting with a Movement Disorder Specialist for possible Deep Brain Stimulation (DBS).",
             options: ["I understand"],
             multiple: false
         },
