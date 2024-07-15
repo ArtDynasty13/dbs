@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 8,
             section: "MOTOR FLUCTUATIONS",
-            question: "How severe/troublesome are your motor fluctuations?",
+            question: "How troublesome are your motor fluctuations?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 10,
             section: "FREEZING OF GAIT",
-            question: "How severe/troublesome are your episodes of freezing of gait during “off-time“?",
+            question: "How troublesome are your episodes of freezing of gait during “off-time“?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 12,
             section: "NON-MOTOR SYMPTOMS",
-            question: "How severe/troublesome are your non-motor 'off' symptoms?",
+            question: "How troublesome are your non-motor 'off' symptoms?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 14,
             section: "HALLUCINATION/PSYCHOSIS",
-            question: "How severe/troublesome are your episodes of hallucinations/psychosis without insight?",
+            question: "How troublesome are your episodes of hallucinations/psychosis without insight?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 15,
             section: "OFF-TIME",
-            question: "How severe/troublesome are your “off-time“ periods with current oral treatment?",
+            question: "How troublesome are your “off-time“ periods with current oral treatment?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 },
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 20,
             section: "DYSTONIA",
-            question: "How severe/troublesome is your dystonia with pain?",
+            question: "How troublesome is your dystonia with pain?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 22,
             section: "IMPULSE CONTROL DISORDER",
-            question: "How severe/troublesome is the impairment due to your impulse control disorder?",
+            question: "How troublesome is the impairment due to your impulse control disorder?",
             options: ["Mild", "Moderate", "Severe"],
             multiple: false,
             points: { "Mild": 1, "Moderate": 2, "Severe": 3 }
