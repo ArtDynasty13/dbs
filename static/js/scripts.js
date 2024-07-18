@@ -117,6 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let formattedQuestion = formatQuestionText(questionData.question);
         let optionsHTML = '';
 
+        
+
         if (questionData.id === 8) {
             optionsHTML += `
                 <div id="medication-container">
