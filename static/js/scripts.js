@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 1,
             question: "Are you taking 5 doses or more of levodopa?",
-            options: ["≤3 doses", "4 doses", "≥5 doses"],
+            options: ["Yes", "No"],
             multiple: false
         },
         {
@@ -142,20 +142,14 @@ function createQuestionElement(questionData) {
     
         if (questionData.id === 8) {
             optionsHTML += `
-                <div class="option-block">
-                    <label for="medication-dropdown">Select Medication:</label>
-                    <select id="medication-dropdown" class="option-input">
-                        ${questionData.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                    <label for="cars">Choose a car:</label>
+                    <select name="cars" id="cars">
+                        <option value="volvo">Volvo</option>
+                        <option value="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
                     </select>
-                </div>
-                <div class="option-block">
-                    <label for="frequency-input">Frequency (times per day):</label>
-                    <input type="number" id="frequency-input" class="option-input" min="1" />
-                </div>
-                <div class="option-block">
-                    <label for="other-medication-input">Other Medication:</label>
-                    <input type="text" id="other-medication-input" class="option-input" />
-                </div>
+                    <br><br>
             `;
         } else {
             questionData.options.forEach((option, index) => {
