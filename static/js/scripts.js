@@ -1,16 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     let currentQuestionIndex = 0;
-    let points = 0;
-    let motorFluctuationsScore = 0;
-    let freezingOfGaitScore = 0;
-    let nonMotorSymptomsScore = 0;
-    let hallucinationScore = 0;
-    let offTimeScore = 0;
-    let dyskinesiaScore = 0;
-    let adlImpairmentScore = 0;
-    let fallsScore = 0;
-    let dystoniaScore = 0;
-    let impulseControlScore = 0;
     const progress = document.querySelector('.progress-bar');
     const animationDuration = 1000; // Duration of the animation in milliseconds
 
@@ -39,12 +28,12 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 3,
             question: "Have you experienced any of the following?",
-            options: ["troublesome dyskinesia (involuntary movement)", "dystonia (more than one hour of uncontrolled muscle contraction)", "neither"],
+            options: ["One hour or more of Troublesome Dyskinesia (involuntary movement)", "Dystonia (uncontrolled muscle contraction)", "neither"],
             multiple: true,
         },
         {
             id: 4,
-            question: "Is your Parkinson's tremor dominant?",
+            question: "Is your Parkinson's 'Tremor Dominant'?",
             options: ["Yes", "No"],
             multiple: false,
         },
@@ -62,13 +51,13 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 7,
-            question: "Do you have any memory issues, hallucinations and/or untreated depression?",
+            question: "Do you have memory issues, hallucinations and/or untreated depression?",
             options: ["Yes", "No"],
             multiple: false
         },
         {
             id: 8,
-            question: "Please list your current PD medications dosage and frequency.",
+            question: "Please list your current PD medications frequency.",
             options: [
                 "Rasagiline",
                 "Selegiline",
@@ -85,18 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
             ],
             multiple: false
         },
-        {
-            id: 9,
-            question: "This is the end of the survey. You may return to any previous questions before submitting.",
-            options: ["I understand"],
-            multiple: false
-        },
-        {
-            id: 10,
-            question: "",
-            options: [""],
-            multiple: false
-        }
     ];
 
     // Initialize the form with questions
@@ -126,30 +103,57 @@ document.addEventListener('DOMContentLoaded', function() {
         showQuestion(currentQuestionIndex);
     }
 
-function createQuestionElement(questionData) {
+    function createQuestionElement(questionData) {
         const questionDiv = document.createElement('div');
         questionDiv.classList.add('question');
         questionDiv.id = `question-${questionData.id}`;
-    
+
         // Function to wrap text inside brackets with a span for colour styling
         function formatQuestionText(questionText) {
             return questionText.replace(/\[(.*?)\]/g, '<span class="bracket-text">[$1]</span>')
-                               .replace(/\((.*?)\)/g, '<span class="bracket-text">($1)</span>');
+                .replace(/\((.*?)\)/g, '<span class="bracket-text">($1)</span>');
         }
-    
+
         let formattedQuestion = formatQuestionText(questionData.question);
         let optionsHTML = '';
-    
+
         if (questionData.id === 8) {
             optionsHTML += `
-                    <label for="cars">Choose a car:</label>
-                    <select name="cars" id="cars">
-                        <option value="volvo">Volvo</option>
-                        <option value="saab">Saab</option>
-                        <option value="opel">Opel</option>
-                        <option value="audi">Audi</option>
-                    </select>
-                    <br><br>
+                <div id="medication-container">
+                    <div class="medication-entry">
+                        <div>
+                            <label for="medicationType">Select your medication type:</label>
+                            <select name="medicationType" class="medication-type">
+                                <option value="select">--Please Select an Option--</option>
+                                <option value="Rasagiline">Rasagiline</option>
+                                <option value="Selegiline">Selegiline</option>
+                                <option value="Pramipexole">Pramipexole</option>
+                                <option value="Ropinirole">Ropinirole</option>
+                                <option value="Rotigotine transdermal patch">Rotigotine transdermal patch</option>
+                                <option value="Bromocriptine">Bromocriptine</option>
+                                <option value="Levodopa-carbidopa immediate-release">Levodopa-carbidopa immediate-release</option>
+                                <option value="Levodopa-benserazide immediate-release">Levodopa-benserazide immediate-release</option>
+                                <option value="Amantadine">Amantadine</option>
+                                <option value="Benztropine">Benztropine</option>
+                                <option value="Trihexyphenidyl">Trihexyphenidyl</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div style="margin-left: 10px;">
+                            <label for="frequency">Frequency per day:</label>
+                            <select name="frequency" class="frequency">
+                                <option value="na">Non Applicable</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5+">5+</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="add-medication-button">Add Another Medication</button>
+                <br><br>
             `;
         } else {
             questionData.options.forEach((option, index) => {
@@ -168,7 +172,7 @@ function createQuestionElement(questionData) {
                 `;
             });
         }
-    
+
         questionDiv.innerHTML = `
             <h3>${formattedQuestion}</h3>
             <p>Choose ${questionData.multiple ? 'one or more answers' : '1 answer'}</p>
@@ -177,21 +181,26 @@ function createQuestionElement(questionData) {
             <button type="button" class="back-button">Back</button>
             <button type="button" class="next-button">Next</button>
         `;
-    
+
         if (questionData.id === 1) {
             questionDiv.querySelector('.back-button').style.display = 'none';
         }
-    
+
         const backButton = questionDiv.querySelector('.back-button');
         if (backButton) {
             backButton.addEventListener('click', previousQuestion);
         }
-    
+
         const nextButton = questionDiv.querySelector('.next-button');
         if (nextButton) {
             nextButton.addEventListener('click', () => nextQuestion(questionData));
         }
-    
+
+        const addMedicationButton = questionDiv.querySelector('.add-medication-button');
+        if (addMedicationButton) {
+            addMedicationButton.addEventListener('click', addMedicationEntry);
+        }
+
         return questionDiv;
     }
 
@@ -228,24 +237,19 @@ function createQuestionElement(questionData) {
 
     function nextQuestion(questionData) {
         let selectedOption;
+
+        // Handle different question types
         if (questionData.id === 8) {
-            const medicationDropdown = document.getElementById('medication-dropdown');
-            const frequencyInput = document.getElementById('frequency-input');
-            const otherMedicationInput = document.getElementById('other-medication-input');
-    
-            const medication = medicationDropdown.value;
-            const frequency = frequencyInput.value;
-            const otherMedication = otherMedicationInput.value;
-    
-            if (medication === "Other" && !otherMedication) {
-                alert('Please enter the name of the other medication.');
-                return;
-            }
-    
-            responses[questionData.id] = {
-                medication: medication === "Other" ? otherMedication : medication,
-                frequency: frequency
-            };
+            const medications = document.querySelectorAll('.medication-entry');
+            const medicationEntries = [];
+
+            medications.forEach(entry => {
+                const medicationType = entry.querySelector('select[name="medicationType"]').value;
+                const frequency = entry.querySelector('select[name="frequency"]').value; // changed to select
+                medicationEntries.push({ medicationType, frequency });
+            });
+
+            responses[questionData.id] = medicationEntries;
         } else {
             selectedOption = document.querySelector(`input[name="question-${questionData.id}"]:checked`);
             if (!selectedOption) {
@@ -255,14 +259,14 @@ function createQuestionElement(questionData) {
             responses[questionData.id] = selectedOption.value;
         }
 
+        // Check for disqualification based on selected options
         if (questionData.disqualifyingOptions && questionData.disqualifyingOptions.includes(selectedOption.value)) {
-            customMessage = "Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire."
+            const customMessage = "Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
             displayCustomResult(customMessage);
-            console.log(`${questionData.id}`);
             return;
         }
-    
-        // Check if there's a question to skip based on current question's skipIf condition
+
+        // Find the index of the next valid question
         const nextIndex = findNextValidQuestion(currentQuestionIndex, selectedOption.value);
         if (nextIndex !== null) {
             showQuestion(nextIndex);
@@ -270,122 +274,71 @@ function createQuestionElement(questionData) {
             determineCategory();
         }
 
-        //IF ON LAST QUESTION, PRINT RESULTS
-        if(currentQuestionIndex === questions[questions.length - 1].id){
-                displayAllScores();
+        // If on the last question, display all scores
+        if (currentQuestionIndex === questions.length - 1) {
+            displayAllScores();
         }
     }
-    
-    function findNextValidQuestion(startIndex, answerValue) {
-        // Start searching from the next question after startIndex
-        for (let i = startIndex + 1; i < questions.length; i++) {
-            const question = questions[i];
-    
-            if (question.skipIf) {
-                const { previousQuestionId, previousAnswer } = question.skipIf;
-                const previousQuestion = questions.find(q => q.id === previousQuestionId);
-                const previousAnswerValue = document.querySelector(`input[name="question-${previousQuestion.id}"]:checked`).value;
-    
-                if (previousAnswerValue === previousAnswer) {
-                    // Continue to skip this question
-                    continue;
-                }
-            }
-    
-            // Check if this question should be skipped based on current answer
-            if (question.skipIf && question.skipIf.previousAnswer === answerValue) {
-                continue;
-            }
-    
-            // Return index of the first valid question found
-            return i;
-        }
-    
-        // Return null if no valid question found
-        return null;
-    }
-    
 
     function previousQuestion() {
-        // Find the index of the last answered question before the current index
-        for (let i = currentQuestionIndex - 1; i >= 0; i--) {
-            const questionElement = document.getElementById(`question-${i}`);
-            const selectedOption = questionElement.querySelector(`input[name="question-${i}"]:checked`);
-            if (selectedOption) {
-                showQuestion(i);
-                return;
-            }
-        }
+        showQuestion(currentQuestionIndex - 1);
     }
 
-    // Function to display custom result
+    function findNextValidQuestion(currentIndex, answer) {
+        let nextIndex = currentIndex + 1;
+
+        while (nextIndex < questions.length) {
+            const nextQuestion = questions[nextIndex];
+            // Check for conditions to skip certain questions if needed
+            if (nextQuestion.id === 4 && answer === "No") {
+                nextIndex++;
+            } else {
+                return nextIndex;
+            }
+        }
+
+        return null;
+    }
+
+    function addMedicationEntry() {
+        const medicationContainer = document.querySelector('#medication-container .medication-entry');
+        if (!medicationContainer) {
+            console.error('No element with ID #medication-container or class .medication-entry found');
+            return;
+        }
+    
+        const clone = medicationContainer.cloneNode(true);
+        const medicationListContainer = document.getElementById('medication-container');
+        if (!medicationListContainer) {
+            console.error('No element with ID #medication-container found');
+            return;
+        }
+    
+        medicationListContainer.appendChild(clone);
+        console.log('New medication entry added');
+    }
+    
+    function determineCategory() {
+        // Logic to determine the final category based on responses
+        console.log('Determining final category based on responses...');
+    }
+
+    function displayAllScores() {
+        // Display all scores or final results
+        console.log('Displaying all scores or final results...');
+    }
+
     function displayCustomResult(message) {
-        const questionsContainer = document.getElementById('questions-container');
-        questionsContainer.innerHTML = `
-            <div class="custom-result">
-                <h3>${message}</h3>
-            </div>
-        `;
-    }
-
-    function isAnyResponseYes(responses)
-    {
-        const values = Object.values(responses);
-        return values.some(response => response === 'Yes');
-    }
-
-    function determineCategory(responses, levodopaDoses) {
-        // Ensure all branches return a value
-        if (levodopaDoses !== 5 && !isAnyResponseYes(responses)) {
-            return {
-                category: 1,
-                message: "CAT 1 - Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire."
-            };
-        } else if (levodopaDoses !== 5 && isAnyResponseYes(responses)) {
-            if (levodopaDoses === 3) {
-                return {
-                    category: 2,
-                    message: "CAT 2 - Based on your answers, you may not benefit from DBS at this time. Please ask your physician about potentially optimizing current treatment. Thank you for taking the time to complete this questionnaire."
-                };
-            } else { // levodopaDoses is 4 and one yes
-                return {
-                    category: 3, //message does not display, will just proceed to next question
-                    //message: "CAT 3 - Based on your answers, you are a candidate for DBS at this time. Please consult a specialist about device-aided therapy. Please proceed to Section 2."
-                };
-            }
-        } else if (levodopaDoses === 5) {
-            return {
-                category: 3,//message does not display, will just proceed to next question
-                //message: "CAT 3 - Based on your answers, you are a candidate for DBS at this time. Please consult a specialist about device-aided therapy. Please proceed to Section 2."
-            };
+        const disqualificationScreen = document.getElementById('disqualification-screen');
+        if (disqualificationScreen) {
+            disqualificationScreen.style.display = 'block';
+            const disqualificationMessage = document.getElementById('disqualification-message');
+            disqualificationMessage.textContent = message;
         }
+    }
 
-        // Default return value to handle unexpected cases
-        return {
-            category: -1,
-            message: "An unexpected error occurred. Please try again."
-        };
-}
-function displayAllScores() {
-    const questionsContainer = document.getElementById('questions-container');
-    questionsContainer.innerHTML = `
-        <div class="custom-result">
-            <h3>Survey Results</h3>
-            <p>Motor Fluctuations Score: ${motorFluctuationsScore}</p>
-            <p>Freezing of Gait Score: ${freezingOfGaitScore}</p>
-            <p>Non-Motor Symptoms Score: ${nonMotorSymptomsScore}</p>
-            <p>Hallucination/Psychosis Score: ${hallucinationScore}</p>
-            <p>Off-Time Score: ${offTimeScore}</p>
-            <p>Dyskinesia Score: ${dyskinesiaScore}</p>
-            <p>ADL Impairment Score: ${adlImpairmentScore}</p>
-            <p>Falls Score: ${fallsScore}</p>
-            <p>Dystonia Score: ${dystoniaScore}</p>
-            <p>Impulse Control Disorder Score: ${impulseControlScore}</p>
-        </div>
-    `;
-}
-
-
-    // Initialize the form when the DOM content is loaded
+    // Initialize the form on page load
     initializeForm();
 });
+
+
