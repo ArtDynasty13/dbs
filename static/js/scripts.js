@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let formattedQuestion = formatQuestionText(questionData.question);
         let optionsHTML = '';
 
-        if (questionData.id === 8) {
+        if (questionData.id === 9) {
             optionsHTML += `
                 <div id="medication-container">
                     <div class="medication-entry">
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const questionInputs = document.querySelectorAll(`#question-${currentQuestionData.id} .option-input`);
         let answered = false;
 
-        if (currentQuestionData.id === 8) {
+        if (currentQuestionData.id === 9) {
             const medicationTypes = document.querySelectorAll('.medication-type');
             const frequencies = document.querySelectorAll('.frequency');
             responses[currentQuestionData.id] = [];
