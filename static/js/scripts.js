@@ -97,8 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
         disqualificationScreen.id = 'disqualification-screen';
         disqualificationScreen.classList.add('question');
         disqualificationScreen.innerHTML = `
-            <div id="disqualification-message" style="color: red; font-size: 1.5rem; margin-top: 20px;">
-                Non-candidacy.
+            <div id="disqualification-message" style="color: blue; font-size: 2.5rem; margin-top: 20px;">
+                Based on your answers, you may not benefit from device aided therapy at this time. Thank you for taking the time to complete this questionnaire. If you have any concerns or need further assistance, please consult with your physician.
             </div>
         `;
         questionsContainer.appendChild(disqualificationScreen);
