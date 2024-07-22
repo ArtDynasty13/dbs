@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const responses = {};
 
-    // Define your questions data
     const questions = [
         {
             id: 0,
@@ -27,36 +26,42 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 3,
-            question: "Have you experienced any of the following?",
-            options: ["One hour or more of Troublesome Dyskinesia (involuntary movement)", "Dystonia (uncontrolled muscle contraction)", "neither"],
-            multiple: true,
+            question: "Do you experience one hour or more of daily troublesome dyskinesia (involuntary movement)?",
+            options: ["Yes", "No"],
+            multiple: false,
         },
         {
             id: 4,
-            question: "Is your Parkinson's 'Tremor Dominant'?",
+            question: "Do you experience dystonia (uncontrolled muscle contraction)?",
             options: ["Yes", "No"],
             multiple: false,
         },
         {
             id: 5,
-            question: "Do you experience bothersome stiffness and/or slowness?",
+            question: "Is your Parkinson's 'tremor dominant'?",
             options: ["Yes", "No"],
             multiple: false,
         },
         {
             id: 6,
-            question: "Do you experience any gait balancing impairment (freezing of gait)?",
+            question: "Do you experience bothersome stiffness and/or slowness?",
             options: ["Yes", "No"],
             multiple: false,
         },
         {
             id: 7,
+            question: "Do you experience gait balancing impairment (freezing of gait)?",
+            options: ["Yes", "No"],
+            multiple: false,
+        },
+        {
+            id: 8,
             question: "Do you have memory issues, hallucinations and/or untreated depression?",
             options: ["Yes", "No"],
             multiple: false
         },
         {
-            id: 8,
+            id: 9,
             question: "Please list your current PD medications frequency.",
             options: [
                 "Rasagiline",
@@ -76,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
         },
     ];
 
-    // Initialize the form with questions
     function initializeForm() {
         const questionsContainer = document.getElementById('questions-container');
         if (!questionsContainer) {
@@ -89,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
             questionsContainer.appendChild(questionElement);
         });
 
-        // Create disqualification screen
         const disqualificationScreen = document.createElement('div');
         disqualificationScreen.id = 'disqualification-screen';
         disqualificationScreen.classList.add('question');
@@ -108,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
         questionDiv.classList.add('question');
         questionDiv.id = `question-${questionData.id}`;
 
-        // Function to wrap text inside brackets with a span for colour styling
         function formatQuestionText(questionText) {
             return questionText.replace(/\[(.*?)\]/g, '<span class="bracket-text">[$1]</span>')
                 .replace(/\((.*?)\)/g, '<span class="bracket-text">($1)</span>');
@@ -116,8 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let formattedQuestion = formatQuestionText(questionData.question);
         let optionsHTML = '';
-
-        
 
         if (questionData.id === 8) {
             optionsHTML += `
@@ -152,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <option value="5+">5+</option>
                             </select>
                         </div>
+                        <button type="button" class="remove-medication-button">Remove</button>
                     </div>
                 </div>
                 <button type="button" class="add-medication-button">Add Another Medication</button>
@@ -203,10 +204,14 @@ document.addEventListener('DOMContentLoaded', function() {
             addMedicationButton.addEventListener('click', addMedicationEntry);
         }
 
+        const removeMedicationButtons = questionDiv.querySelectorAll('.remove-medication-button');
+        removeMedicationButtons.forEach(button => {
+            button.addEventListener('click', removeMedicationEntry);
+        });
+
         return questionDiv;
     }
 
-    // Show a specific question by index
     function showQuestion(index) {
         const questionElements = document.querySelectorAll('.question');
 
@@ -221,126 +226,159 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Toggle back button visibility
             const backButton = questionElements[index].querySelector('.back-button');
             if (backButton) {
                 backButton.style.display = index === 0 ? 'none' : 'inline-block';
             }
 
-            // Update progress bar
-            const progressPercent = ((index + 1) / questions.length) * 100;
+            const progressPercent = ((index + 1) / questionElements.length) * 100;
             progress.style.width = `${progressPercent}%`;
-
-            currentQuestionIndex = index;
-        } else {
-            console.error(`Invalid index ${index} for questions array.`);
         }
     }
 
-    function nextQuestion(questionData) {
-        let selectedOption;
+    function nextQuestion(currentQuestionData) {
+        const questionInputs = document.querySelectorAll(`#question-${currentQuestionData.id} .option-input`);
+        let answered = false;
 
-        // Handle different question types
-        if (questionData.id === 8) {
-            const medications = document.querySelectorAll('.medication-entry');
-            const medicationEntries = [];
-
-            medications.forEach(entry => {
-                const medicationType = entry.querySelector('select[name="medicationType"]').value;
-                const frequency = entry.querySelector('select[name="frequency"]').value; // changed to select
-                medicationEntries.push({ medicationType, frequency });
+        if (currentQuestionData.id === 8) {
+            const medicationTypes = document.querySelectorAll('.medication-type');
+            const frequencies = document.querySelectorAll('.frequency');
+            responses[currentQuestionData.id] = [];
+            medicationTypes.forEach((type, index) => {
+                const typeValue = type.value;
+                const frequencyValue = frequencies[index].value;
+                if (typeValue !== 'select' && frequencyValue !== 'na') {
+                    responses[currentQuestionData.id].push({
+                        type: typeValue,
+                        frequency: frequencyValue
+                    });
+                }
             });
-
-            responses[questionData.id] = medicationEntries;
+            answered = responses[currentQuestionData.id].length > 0;
         } else {
-            selectedOption = document.querySelector(`input[name="question-${questionData.id}"]:checked`);
-            if (!selectedOption) {
-                alert('Please select an option.');
-                return;
+            questionInputs.forEach(input => {
+                if (input.checked) {
+                    answered = true;
+                    responses[currentQuestionData.id] = input.value;
+                }
+            });
+        }
+
+        if (answered) {
+            if (checkDisqualification(currentQuestionData.id, responses[currentQuestionData.id])) {
+                showDisqualificationScreen();
+            } else {
+                currentQuestionIndex++;
+                if (currentQuestionIndex >= questions.length) {
+                    showResults();
+                } else {
+                    showQuestion(currentQuestionIndex);
+                }
             }
-            responses[questionData.id] = selectedOption.value;
-        }
-
-        // Check for disqualification based on selected options
-        if (questionData.disqualifyingOptions && questionData.disqualifyingOptions.includes(selectedOption.value)) {
-            const customMessage = "Based on your answers, you may not benefit from DBS at this time. Please consult your physician for any further questions. Thank you for taking the time to complete this questionnaire.";
-            displayCustomResult(customMessage);
-            return;
-        }
-
-        // Find the index of the next valid question
-        const nextIndex = findNextValidQuestion(currentQuestionIndex, selectedOption.value);
-        if (nextIndex !== null) {
-            showQuestion(nextIndex);
         } else {
-            determineCategory();
-        }
-
-        // If on the last question, display all scores
-        if (currentQuestionIndex === questions.length - 1) {
-            displayAllScores();
+            alert('Please select an answer before proceeding.');
         }
     }
 
     function previousQuestion() {
-        showQuestion(currentQuestionIndex - 1);
-    }
-
-    function findNextValidQuestion(currentIndex, answer) {
-        let nextIndex = currentIndex + 1;
-
-        while (nextIndex < questions.length) {
-            const nextQuestion = questions[nextIndex];
-            // Check for conditions to skip certain questions if needed
-            if (nextQuestion.id === 4 && answer === "No") {
-                nextIndex++;
-            } else {
-                return nextIndex;
-            }
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            showQuestion(currentQuestionIndex);
         }
-
-        return null;
     }
 
     function addMedicationEntry() {
-        const medicationContainer = document.querySelector('#medication-container .medication-entry');
-        if (!medicationContainer) {
-            console.error('No element with ID #medication-container or class .medication-entry found');
-            return;
-        }
-    
-        const clone = medicationContainer.cloneNode(true);
-        const medicationListContainer = document.getElementById('medication-container');
-        if (!medicationListContainer) {
-            console.error('No element with ID #medication-container found');
-            return;
-        }
-    
-        medicationListContainer.appendChild(clone);
-        console.log('New medication entry added');
-    }
-    
-    function determineCategory() {
-        // Logic to determine the final category based on responses
-        console.log('Determining final category based on responses...');
+        const container = document.getElementById('medication-container');
+        const newEntry = document.createElement('div');
+        newEntry.classList.add('medication-entry');
+
+        newEntry.innerHTML = `
+            <div>
+                <label for="medicationType">Select your medication type:</label>
+                <select name="medicationType" class="medication-type">
+                    <option value="select">--Please Select an Option--</option>
+                    <option value="Rasagiline">Rasagiline</option>
+                    <option value="Selegiline">Selegiline</option>
+                    <option value="Pramipexole">Pramipexole</option>
+                    <option value="Ropinirole">Ropinirole</option>
+                    <option value="Rotigotine transdermal patch">Rotigotine transdermal patch</option>
+                    <option value="Bromocriptine">Bromocriptine</option>
+                    <option value="Levodopa-carbidopa immediate-release">Levodopa-carbidopa immediate-release</option>
+                    <option value="Levodopa-benserazide immediate-release">Levodopa-benserazide immediate-release</option>
+                    <option value="Amantadine">Amantadine</option>
+                    <option value="Benztropine">Benztropine</option>
+                    <option value="Trihexyphenidyl">Trihexyphenidyl</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div style="margin-left: 10px;">
+                <label for="frequency">Frequency per day:</label>
+                <select name="frequency" class="frequency">
+                    <option value="na">Non Applicable</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5+">5+</option>
+                </select>
+            </div>
+            <button type="button" class="remove-medication-button">Remove</button>
+        `;
+
+        const removeButton = newEntry.querySelector('.remove-medication-button');
+        removeButton.addEventListener('click', removeMedicationEntry);
+
+        container.appendChild(newEntry);
     }
 
-    function displayAllScores() {
-        // Display all scores or final results
-        console.log('Displaying all scores or final results...');
+    function removeMedicationEntry(event) {
+        const button = event.target;
+        const entry = button.closest('.medication-entry');
+        entry.remove();
     }
 
-    function displayCustomResult(message) {
+    function checkDisqualification(questionId, response) {
+        // Example disqualification logic
+        if (questionId === 1 && response === 'No') {
+            return true;
+        }
+        // Add other disqualification conditions as needed
+        return false;
+    }
+
+    function showDisqualificationScreen() {
+        const questionElements = document.querySelectorAll('.question');
+        questionElements.forEach(questionElement => {
+            questionElement.classList.remove('active');
+            questionElement.classList.add('fade-out');
+        });
+
         const disqualificationScreen = document.getElementById('disqualification-screen');
-        if (disqualificationScreen) {
-            disqualificationScreen.style.display = 'block';
-            const disqualificationMessage = document.getElementById('disqualification-message');
-            disqualificationMessage.textContent = message;
-        }
+        disqualificationScreen.classList.remove('fade-out');
+        disqualificationScreen.classList.add('active');
     }
 
-    // Initialize the form on page load
+    function showResults() {
+        const questionElements = document.querySelectorAll('.question');
+        questionElements.forEach(questionElement => {
+            questionElement.classList.remove('active');
+            questionElement.classList.add('fade-out');
+        });
+
+        const resultScreen = document.createElement('div');
+        resultScreen.classList.add('question', 'result-screen');
+        resultScreen.innerHTML = `
+            <h2>Survey Results</h2>
+            <p>Thank you for completing the survey. Here are your responses:</p>
+            <pre>${JSON.stringify(responses, null, 2)}</pre>
+        `;
+
+        const questionsContainer = document.getElementById('questions-container');
+        questionsContainer.appendChild(resultScreen);
+
+        resultScreen.classList.remove('fade-out');
+        resultScreen.classList.add('active');
+    }
+
     initializeForm();
 });
-
-
