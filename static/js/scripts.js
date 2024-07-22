@@ -338,8 +338,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function checkDisqualification(questionId, response) {
-        // Example disqualification logic
+        // Less than 5 doses of levodopa
         if (questionId === 1 && response === 'No') {
+            return true;
+        }
+        // failed 5 (levodopa doses) - 2 (off-time) - 1 (dyskinesia) test
+        if(questionId === 3 && response === 'No' && responses[2] === 'No') {
             return true;
         }
         // Add other disqualification conditions as needed
