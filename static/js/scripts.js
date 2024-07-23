@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
             medicationTypes.forEach((type, index) => {
                 const typeValue = type.value;
                 const frequencyValue = frequencies[index].value;
-                if (typeValue !== 'select' && frequencyValue !== 'na') {
+                if (typeValue !== 'select' && frequencyValue !== 'select') {
                     responses[currentQuestionData.id].push({
                         type: typeValue,
                         frequency: frequencyValue
@@ -310,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("Medication container not found in the DOM.");
             return;
         }
-
+    
         const medicationEntry = document.createElement('div');
         medicationEntry.classList.add('medication-entry');
         medicationEntry.innerHTML = `
@@ -319,8 +319,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <option value="select">Select Medication</option>
                 ${questions[9].options.map(option => `<option value="${option}">${option}</option>`).join('')}
             </select>
+            <label for="other-medication" class="other-medication-label" style="display:none;">Please specify:</label>
+            <input type="text" class="other-medication-input" style="display:none;" />
             <label for="frequency">Frequency:</label>
             <select class="frequency">
+                <option value="select">Select Frequency</option>
                 <option value="na">N/A</option>
                 <option value="1">1 time a day</option>
                 <option value="2">2 times a day</option>
@@ -331,36 +334,84 @@ document.addEventListener('DOMContentLoaded', function() {
             <button type="button" class="remove-medication-button">Remove</button>
             <br>
         `;
-
+    
         medicationContainer.appendChild(medicationEntry);
-
+    
         const removeButton = medicationEntry.querySelector('.remove-medication-button');
         if (removeButton) {
             removeButton.addEventListener('click', () => {
                 medicationEntry.remove();
+                checkDuplicateMedication(); // Update duplicates after removal
             });
         }
-
+    
         const medicationTypeSelect = medicationEntry.querySelector('.medication-type');
         if (medicationTypeSelect) {
-            medicationTypeSelect.addEventListener('change', checkDuplicateMedication);
+            medicationTypeSelect.addEventListener('change', function() {
+                const otherMedicationInput = medicationEntry.querySelector('.other-medication-input');
+                const otherMedicationLabel = medicationEntry.querySelector('.other-medication-label');
+                if (this.value === 'Other') {
+                    otherMedicationInput.style.display = 'inline';
+                    otherMedicationLabel.style.display = 'inline';
+                    otherMedicationInput.focus();
+                } else {
+                    otherMedicationInput.style.display = 'none';
+                    otherMedicationLabel.style.display = 'none';
+                    otherMedicationInput.value = ''; // Clear input when not needed
+                }
+                checkDuplicateMedication(); // Update duplicates
+            });
+        }
+    
+        const otherMedicationInput = medicationEntry.querySelector('.other-medication-input');
+        if (otherMedicationInput) {
+            otherMedicationInput.addEventListener('input', checkDuplicateMedication);
+        }
+    
+        const frequencySelect = medicationEntry.querySelector('.frequency');
+        if (frequencySelect) {
+            frequencySelect.addEventListener('change', checkDuplicateMedication);
         }
     }
-
+    
     function checkDuplicateMedication() {
         const medicationTypes = document.querySelectorAll('.medication-type');
-        selectedMedications = Array.from(medicationTypes).map(select => select.value);
+        const otherMedicationInputs = document.querySelectorAll('.other-medication-input');
+        selectedMedications = [];
+    
+        medicationTypes.forEach((select, index) => {
+            const value = select.value;
+            if (value === 'Other') {
+                const otherInput = otherMedicationInputs[index];
+                if (otherInput && otherInput.value.trim()) {
+                    selectedMedications.push(otherInput.value.trim());
+                }
+            } else if (value !== 'select') {
+                selectedMedications.push(value);
+            }
+        });
+    
         const duplicates = selectedMedications.filter((item, index) => selectedMedications.indexOf(item) !== index);
         
-        medicationTypes.forEach(select => {
-            if (duplicates.includes(select.value) && select.value !== 'select') {
+        medicationTypes.forEach((select, index) => {
+            if (select.value === 'Other') {
+                const otherInput = otherMedicationInputs[index];
+                if (otherInput && duplicates.includes(otherInput.value.trim())) {
+                    select.setCustomValidity('This custom medication has already been selected.');
+                    otherInput.setCustomValidity('This custom medication has already been selected.');
+                } else {
+                    select.setCustomValidity('');
+                    otherInput.setCustomValidity('');
+                }
+            } else if (duplicates.includes(select.value)) {
                 select.setCustomValidity('This medication has already been selected.');
-                select.reportValidity();
             } else {
                 select.setCustomValidity('');
             }
+            select.reportValidity();
         });
     }
+    
 
     initializeForm();
 });
