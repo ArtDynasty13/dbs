@@ -320,14 +320,14 @@ document.addEventListener('DOMContentLoaded', function() {
         medicationEntry.classList.add('medication-entry');
         medicationEntry.innerHTML = `
             <label for="medication-type">Medication Type:</label>
-            <select class="medication-type">
+            <select class="medication-type custom-select"> <!-- Add 'custom-select' class -->
                 <option value="select">Select Medication</option>
                 ${questions[9].options.map(option => `<option value="${option}">${option}</option>`).join('')}
             </select>
             <label for="other-medication" class="other-medication-label" style="display:none;">Please specify:</label>
             <input type="text" class="other-medication-input" style="display:none;" />
             <label for="frequency">Frequency:</label>
-            <select class="frequency">
+            <select class="frequency custom-select"> <!-- Add 'custom-select' class -->
                 <option value="select">Select Frequency</option>
                 <option value="na">N/A</option>
                 <option value="1">1 time a day</option>
@@ -339,6 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <button type="button" class="remove-medication-button">Remove</button>
             <br>
         `;
+        
     
         medicationContainer.appendChild(medicationEntry);
     

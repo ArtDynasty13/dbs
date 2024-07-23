@@ -29,6 +29,29 @@ body {
     background-color: #76c7c0;
 }
 
+/* Style for the select element */
+.custom-select {
+    padding: 10px;
+    border: 2px solid #ccc; /* Light grey border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Increase font size */
+    background-color: #fff; /* White background */
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.custom-select:focus {
+    border-color: #4CAF50; /* Green border on focus */
+    outline: none;
+}
+
+/* Style for the select element */
+.custom-select option {
+    font-size: 16px; /* Increase font size */
+    padding: 10px; /* Increase padding for options */
+}
+
+
 
 /* Fade-in and fade-out with vertical movement animations */
 @keyframes moveIn {
@@ -196,6 +219,40 @@ h3 {
 .bracket-text {
     color: green; /* Change 'green' to any color you prefer */
     /* Add any other styles as needed */
+}
+
+/* Add Medication button */
+.add-medication-button {
+    width: 110px;
+    height: 40px;
+    border-radius: 5px;
+    font-weight: 700;
+    font-family: 'Inter Variable', Arial, sans-serif;
+    font-size: 0.8rem;
+    margin-top: 20px;
+    background-color: rgb(41, 145, 20); /* teal color */
+    color: white;
+}
+
+.add-medication-button:hover {
+    background-color: rgb(2, 100, 66); /* Darker teal */
+}
+
+/* Remove Medication button */
+.remove-medication-button {
+    width: 110px;
+    height: 40px;
+    border-radius: 5px;
+    font-weight: 700;
+    font-family: 'Inter Variable', Arial, sans-serif;
+    font-size: 0.8rem;
+    margin-top: 20px;
+    background-color: #d9534f; /* Red color */
+    color: white;
+}
+
+.remove-medication-button:hover {
+    background-color: #c92c3c; /* Darker red */
 }
 
 
