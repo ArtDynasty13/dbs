@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const responses = {};
 
+    let selectedMedications = [];
+
     const questions = [
         {
             id: 0,
@@ -121,40 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (questionData.id === 9) {
             optionsHTML += `
-                <div id="medication-container">
-                    <div class="medication-entry">
-                        <div>
-                            <label for="medicationType">Select your medication type:</label>
-                            <select name="medicationType" class="medication-type">
-                                <option value="select">--Please Select an Option--</option>
-                                <option value="Rasagiline">Rasagiline</option>
-                                <option value="Selegiline">Selegiline</option>
-                                <option value="Pramipexole">Pramipexole</option>
-                                <option value="Ropinirole">Ropinirole</option>
-                                <option value="Rotigotine transdermal patch">Rotigotine transdermal patch</option>
-                                <option value="Bromocriptine">Bromocriptine</option>
-                                <option value="Levodopa-carbidopa immediate-release">Levodopa-carbidopa immediate-release</option>
-                                <option value="Levodopa-benserazide immediate-release">Levodopa-benserazide immediate-release</option>
-                                <option value="Amantadine">Amantadine</option>
-                                <option value="Benztropine">Benztropine</option>
-                                <option value="Trihexyphenidyl">Trihexyphenidyl</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div style="margin-left: 10px;">
-                            <label for="frequency">Frequency per day:</label>
-                            <select name="frequency" class="frequency">
-                                <option value="na">Non Applicable</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5+">5+</option>
-                            </select>
-                        </div>
-                        <button type="button" class="remove-medication-button">Remove</button>
-                    </div>
-                </div>
+                <div id="medication-container"></div>
                 <button type="button" class="add-medication-button">Add Another Medication</button>
                 <br><br>
             `;
@@ -204,11 +173,6 @@ document.addEventListener('DOMContentLoaded', function() {
             addMedicationButton.addEventListener('click', addMedicationEntry);
         }
 
-        const removeMedicationButtons = questionDiv.querySelectorAll('.remove-medication-button');
-        removeMedicationButtons.forEach(button => {
-            button.addEventListener('click', removeMedicationEntry);
-        });
-
         return questionDiv;
     }
 
@@ -220,6 +184,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (i === index) {
                     questionElement.classList.remove('fade-out');
                     questionElement.classList.add('active');
+
+                    if (questions[i].id === 9) {
+                        if (document.querySelectorAll('.medication-entry').length === 0) {
+                            addMedicationEntry();
+                        }
+                    }
                 } else {
                     questionElement.classList.remove('active');
                     questionElement.classList.add('fade-out');
@@ -287,56 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function addMedicationEntry() {
-        const container = document.getElementById('medication-container');
-        const newEntry = document.createElement('div');
-        newEntry.classList.add('medication-entry');
-
-        newEntry.innerHTML = `
-            <div>
-                <label for="medicationType">Select your medication type:</label>
-                <select name="medicationType" class="medication-type">
-                    <option value="select">--Please Select an Option--</option>
-                    <option value="Rasagiline">Rasagiline</option>
-                    <option value="Selegiline">Selegiline</option>
-                    <option value="Pramipexole">Pramipexole</option>
-                    <option value="Ropinirole">Ropinirole</option>
-                    <option value="Rotigotine transdermal patch">Rotigotine transdermal patch</option>
-                    <option value="Bromocriptine">Bromocriptine</option>
-                    <option value="Levodopa-carbidopa immediate-release">Levodopa-carbidopa immediate-release</option>
-                    <option value="Levodopa-benserazide immediate-release">Levodopa-benserazide immediate-release</option>
-                    <option value="Amantadine">Amantadine</option>
-                    <option value="Benztropine">Benztropine</option>
-                    <option value="Trihexyphenidyl">Trihexyphenidyl</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-            <div style="margin-left: 10px;">
-                <label for="frequency">Frequency per day:</label>
-                <select name="frequency" class="frequency">
-                    <option value="na">Non Applicable</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5+">5+</option>
-                </select>
-            </div>
-            <button type="button" class="remove-medication-button">Remove</button>
-        `;
-
-        const removeButton = newEntry.querySelector('.remove-medication-button');
-        removeButton.addEventListener('click', removeMedicationEntry);
-
-        container.appendChild(newEntry);
-    }
-
-    function removeMedicationEntry(event) {
-        const button = event.target;
-        const entry = button.closest('.medication-entry');
-        entry.remove();
-    }
-
     function checkDisqualification(questionId, response) {
         // Less than 5 doses of levodopa
         if (questionId === 1 && response === 'No') {
@@ -363,25 +283,66 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showResults() {
-        const questionElements = document.querySelectorAll('.question');
-        questionElements.forEach(questionElement => {
-            questionElement.classList.remove('active');
-            questionElement.classList.add('fade-out');
-        });
+        console.log('Survey complete! Responses:', responses);
+        // Implement result display logic here
+    }
 
-        const resultScreen = document.createElement('div');
-        resultScreen.classList.add('question', 'result-screen');
-        resultScreen.innerHTML = `
-            <h2>Survey Results</h2>
-            <p>Thank you for completing the survey. Here are your responses:</p>
-            <pre>${JSON.stringify(responses, null, 2)}</pre>
+    function addMedicationEntry() {
+        const medicationContainer = document.getElementById('medication-container');
+        if (!medicationContainer) {
+            console.error("Medication container not found in the DOM.");
+            return;
+        }
+
+        const medicationEntry = document.createElement('div');
+        medicationEntry.classList.add('medication-entry');
+        medicationEntry.innerHTML = `
+            <label for="medication-type">Medication Type:</label>
+            <select class="medication-type">
+                <option value="select">Select Medication</option>
+                ${questions[9].options.map(option => `<option value="${option}">${option}</option>`).join('')}
+            </select>
+            <label for="frequency">Frequency:</label>
+            <select class="frequency">
+                <option value="na">N/A</option>
+                <option value="1">1 time a day</option>
+                <option value="2">2 times a day</option>
+                <option value="3">3 times a day</option>
+                <option value="4">4 times a day</option>
+                <option value="5">5 times a day</option>
+            </select>
+            <button type="button" class="remove-medication-button">Remove</button>
+            <br>
         `;
 
-        const questionsContainer = document.getElementById('questions-container');
-        questionsContainer.appendChild(resultScreen);
+        medicationContainer.appendChild(medicationEntry);
 
-        resultScreen.classList.remove('fade-out');
-        resultScreen.classList.add('active');
+        const removeButton = medicationEntry.querySelector('.remove-medication-button');
+        if (removeButton) {
+            removeButton.addEventListener('click', () => {
+                medicationEntry.remove();
+            });
+        }
+
+        const medicationTypeSelect = medicationEntry.querySelector('.medication-type');
+        if (medicationTypeSelect) {
+            medicationTypeSelect.addEventListener('change', checkDuplicateMedication);
+        }
+    }
+
+    function checkDuplicateMedication() {
+        const medicationTypes = document.querySelectorAll('.medication-type');
+        selectedMedications = Array.from(medicationTypes).map(select => select.value);
+        const duplicates = selectedMedications.filter((item, index) => selectedMedications.indexOf(item) !== index);
+        
+        medicationTypes.forEach(select => {
+            if (duplicates.includes(select.value) && select.value !== 'select') {
+                select.setCustomValidity('This medication has already been selected.');
+                select.reportValidity();
+            } else {
+                select.setCustomValidity('');
+            }
+        });
     }
 
     initializeForm();
