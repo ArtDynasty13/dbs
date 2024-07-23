@@ -286,28 +286,37 @@ document.addEventListener('DOMContentLoaded', function() {
         disqualificationScreen.classList.remove('fade-out');
         disqualificationScreen.classList.add('active');
     }
-
     function showResults() {
         const questionElements = document.querySelectorAll('.question');
         questionElements.forEach(questionElement => {
             questionElement.classList.remove('active');
             questionElement.classList.add('fade-out');
         });
-
+    
         const resultScreen = document.createElement('div');
         resultScreen.classList.add('question', 'result-screen');
         resultScreen.innerHTML = `
-            <h2>Survey Results</h2>
-            <p>Thank you for completing the survey. Here are your responses:</p>
-            <pre>${JSON.stringify(responses, null, 2)}</pre>
+            <h2>Form Complete</h2>
+            <p>Thank you for completing the survey. Based on your responses, it is advised that you:</p>
+            <p style="font-weight: bold; text-align: center; margin-top: 20px;">Present this page to your primary doctor to discuss a referral to PMDP for an assessment for device-aided therapy.</p>
+            <p>Please ensure to follow up with your healthcare provider for further evaluation and potential next steps.</p>
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="printButton" style="padding: 10px 20px; font-size: 16px;">PRINT/SAVE PAGE</button>
+            </div>
         `;
-
+    
         const questionsContainer = document.getElementById('questions-container');
         questionsContainer.appendChild(resultScreen);
-
+    
         resultScreen.classList.remove('fade-out');
         resultScreen.classList.add('active');
+    
+        // Add event listener for print button
+        document.getElementById('printButton').addEventListener('click', () => {
+            window.print();
+        });
     }
+    
 
     function addMedicationEntry() {
         const medicationContainer = document.getElementById('medication-container');
