@@ -266,6 +266,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if(questionId === 3 && response === 'No' && responses[2] === 'No') {
             return true;
         }
+        //self reported cognitive issues
+        if(questionId === 8 && response == 'Yes')
+        {
+            return true;
+        }
         // Add other disqualification conditions as needed
         return false;
     }
