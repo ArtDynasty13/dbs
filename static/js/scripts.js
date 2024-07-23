@@ -283,8 +283,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showResults() {
-        console.log('Survey complete! Responses:', responses);
-        // Implement result display logic here
+        const questionElements = document.querySelectorAll('.question');
+        questionElements.forEach(questionElement => {
+            questionElement.classList.remove('active');
+            questionElement.classList.add('fade-out');
+        });
+
+        const resultScreen = document.createElement('div');
+        resultScreen.classList.add('question', 'result-screen');
+        resultScreen.innerHTML = `
+            <h2>Survey Results</h2>
+            <p>Thank you for completing the survey. Here are your responses:</p>
+            <pre>${JSON.stringify(responses, null, 2)}</pre>
+        `;
+
+        const questionsContainer = document.getElementById('questions-container');
+        questionsContainer.appendChild(resultScreen);
+
+        resultScreen.classList.remove('fade-out');
+        resultScreen.classList.add('active');
     }
 
     function addMedicationEntry() {
