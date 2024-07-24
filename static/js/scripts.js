@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 2,
-            question: "Are you experiencing a total of greater than 2 hours of daily “off-time“ (where Parkinson’s symptoms become more noticeable often after an initial benefit from oral treatment)?",
+            question: "Are you experiencing a total of greater than two hours of daily “off-time“ (where Parkinson’s symptoms become more noticeable often after an initial benefit from oral treatment)?",
             options: ["Yes", "No"],
             multiple: false,
         },
