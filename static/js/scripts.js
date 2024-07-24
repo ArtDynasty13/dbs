@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <option value="2">2 times a day</option>
                 <option value="3">3 times a day</option>
                 <option value="4">4 times a day</option>
-                <option value="5">5 times a day</option>
+                <option value="5">5+ times a day</option>
             </select>
             <button type="button" class="remove-medication-button">Remove</button>
             <br>
