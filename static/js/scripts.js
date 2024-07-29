@@ -40,30 +40,36 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 5,
-            question: "Is your Parkinson's 'tremor dominant'?",
+            question: "Do you experience significant tremors that are not effectively managed by your current medication?",
             options: ["Yes", "No"],
             multiple: false,
         },
         {
             id: 6,
-            question: "Do you experience bothersome stiffness and/or slowness?",
+            question: "Do you experience gait balancing impairment?",
             options: ["Yes", "No"],
             multiple: false,
         },
         {
             id: 7,
-            question: "Do you experience gait balancing impairment (freezing of gait)?",
+            question: "Do you experience freezing of gait, where your feet are stuck to the ground?",
             options: ["Yes", "No"],
             multiple: false,
         },
         {
             id: 8,
-            question: "Do you have memory issues, hallucinations and/or untreated depression?",
+            question: "Do you have memory issues or hallucinations?",
             options: ["Yes", "No"],
             multiple: false
         },
         {
             id: 9,
+            question: "Do you have untreated depression?",
+            options: ["Yes", "No"],
+            multiple: false
+        },
+        {
+            id: 10,
             question: "Please list your current PD medications frequency.",
             options: [
                 "Rasagiline",
@@ -121,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let formattedQuestion = formatQuestionText(questionData.question);
         let optionsHTML = '';
 
-        if (questionData.id === 9) {
+        if (questionData.id === 10) {
             optionsHTML += `
                 <div id="medication-container"></div>
                 <button type="button" class="add-medication-button">Add Another Medication</button>
@@ -185,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     questionElement.classList.remove('fade-out');
                     questionElement.classList.add('active');
 
-                    if (questions[i].id === 9) {
+                    if (questions[i].id === 10) {
                         if (document.querySelectorAll('.medication-entry').length === 0) {
                             addMedicationEntry();
                         }
@@ -210,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const questionInputs = document.querySelectorAll(`#question-${currentQuestionData.id} .option-input`);
         let answered = false;
 
-        if (currentQuestionData.id === 9) {
+        if (currentQuestionData.id === 10) {
             const medicationTypes = document.querySelectorAll('.medication-type');
             const frequencies = document.querySelectorAll('.frequency');
             responses[currentQuestionData.id] = [];
@@ -331,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <label for="medication-type">Medication Type:</label>
             <select class="medication-type custom-select"> <!-- Add 'custom-select' class -->
                 <option value="select">Select Medication</option>
-                ${questions[9].options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                ${questions[10].options.map(option => `<option value="${option}">${option}</option>`).join('')}
             </select>
             <label for="other-medication" class="other-medication-label" style="display:none;">Please specify:</label>
             <input type="text" class="other-medication-input" style="display:none;" />
