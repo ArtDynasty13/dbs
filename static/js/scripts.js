@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let selectedMedications = [];
 
+    let answeredQuestions = [];
+
     const questions = [
         {
             id: 0,
@@ -46,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
             id: 6,
-            question: "Do you experience gait balancing impairment?",
+            question: "Do you experience problems maintaining your balance and coordination while walking (gait balancing impairment)?",
             options: ["Yes", "No"],
             multiple: false,
         },
@@ -55,6 +57,11 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "Do you experience freezing of gait, where your feet are stuck to the ground?",
             options: ["Yes", "No"],
             multiple: false,
+            skipIf: {
+                previousQuestionId: 6,
+                previousAnswer: "No"
+            }
+
         },
         {
             id: 8,
@@ -72,19 +79,22 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 10,
             question: "Please list your current PD medications frequency.",
             options: [
-                "Rasagiline",
-                "Selegiline",
-                "Pramipexole",
-                "Ropinirole",
-                "Rotigotine transdermal patch",
-                "Bromocriptine",
-                "Levodopa-carbidopa immediate-release",
-                "Levodopa-benserazide immediate-release",
-                "Amantadine",
-                "Benztropine",
-                "Trihexyphenidyl",
+                //"Benztropine mesylate (pdp-Benztropine)",
+                "Bromocriptine mesylate (Bromocriptine)",
+                "Entacapone (Comtan)",
+                //"Enthopropazine (Pasitan 50)",
+                "Levodopa and benserazide (Prolopa)",
+                "Levodopa and carbidopa (Sinemet)",
+                "Levodopa and carbidopa (Sinemet CR)",
+                "Levodopa, carbidopa and entacapone (Stalevo)",
+                "pdp-amantadine hydrochloride",
+                "Pramipexole dihydrochloride monohydrate (Mirapex)",
+                "Rasagiline (Azilect)",
+                "Ropinirole hydrochloride (Requip)",
+                "Safinamide tablets (Onstryv)",
+                "Selegiline hydrochloride (Mylan-Selegiline)",
                 "Other"
-            ],
+            ],            
             multiple: false
         },
     ];
@@ -215,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function nextQuestion(currentQuestionData) {
         const questionInputs = document.querySelectorAll(`#question-${currentQuestionData.id} .option-input`);
         let answered = false;
-
+    
         if (currentQuestionData.id === 10) {
             const medicationTypes = document.querySelectorAll('.medication-type');
             const frequencies = document.querySelectorAll('.frequency');
@@ -239,8 +249,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-
+    
+        // Check if the next question should be skipped
+        const nextQuestionData = questions[currentQuestionIndex + 1];
+        if (nextQuestionData && nextQuestionData.skipIf) {
+            const previousQuestionData = questions.find(question => question.id === nextQuestionData.skipIf.previousQuestionId);
+            const previousAnswer = document.querySelector(`input[name="question-${previousQuestionData.id}"]:checked`).value;
+            if (previousAnswer === nextQuestionData.skipIf.previousAnswer) {
+                currentQuestionIndex++;
+            }
+        }
+    
         if (answered) {
+            // Track answered question
+            if (!answeredQuestions.includes(currentQuestionIndex)) {
+                answeredQuestions.push(currentQuestionIndex);
+            }
+    
             if (checkDisqualification(currentQuestionData.id, responses[currentQuestionData.id])) {
                 showDisqualificationScreen();
             } else {
@@ -255,14 +280,22 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Please select an answer before proceeding.');
         }
     }
+    
 
     function previousQuestion() {
-        if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            showQuestion(currentQuestionIndex);
+        if (answeredQuestions.length > 0) {
+            // Remove the current question from answered questions
+            answeredQuestions.pop();
+            // Get the last answered question index
+            const lastAnsweredQuestionIndex = answeredQuestions[answeredQuestions.length - 1];
+            // Show the last answered question
+            if (lastAnsweredQuestionIndex !== undefined) {
+                showQuestion(lastAnsweredQuestionIndex);
+                currentQuestionIndex = lastAnsweredQuestionIndex;
+            }
         }
     }
-
+    
     function checkDisqualification(questionId, response) {
         // Less than 5 doses of levodopa
         if (questionId === 1 && response === 'No') {
@@ -273,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return true;
         }
         //self reported cognitive issues
-        if(questionId === 8 && response == 'Yes')
+        if((questionId === 8 || questionId === 9) && response == 'Yes')
         {
             return true;
         }
@@ -335,12 +368,20 @@ document.addEventListener('DOMContentLoaded', function() {
         medicationEntry.classList.add('medication-entry');
         medicationEntry.innerHTML = `
             <label for="medication-type">Medication Type:</label>
+
             <select class="medication-type custom-select"> <!-- Add 'custom-select' class -->
                 <option value="select">Select Medication</option>
                 ${questions[10].options.map(option => `<option value="${option}">${option}</option>`).join('')}
             </select>
+
+            <select class="dosage custom-select"> <!-- Add 'custom-select' class -->
+                <option value="">Select Dosage</option>
+                <!-- Options will be populated based on medication selection -->
+            </select>
+
             <label for="other-medication" class="other-medication-label" style="display:none;">Please specify:</label>
             <input type="text" class="other-medication-input" style="display:none;" />
+            
             <label for="frequency">Frequency:</label>
             <select class="frequency custom-select"> <!-- Add 'custom-select' class -->
                 <option value="select">Select Frequency</option>
@@ -351,6 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <option value="4">4 times a day</option>
                 <option value="5">5+ times a day</option>
             </select>
+
             <button type="button" class="remove-medication-button">Remove</button>
             <br>
         `;
@@ -369,6 +411,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const medicationTypeSelect = medicationEntry.querySelector('.medication-type');
         if (medicationTypeSelect) {
             medicationTypeSelect.addEventListener('change', function() {
+                //console.log('Medication type selected:', this.value);
+                updateDosageOptions(this);
                 const otherMedicationInput = medicationEntry.querySelector('.other-medication-input');
                 const otherMedicationLabel = medicationEntry.querySelector('.other-medication-label');
                 if (this.value === 'Other') {
@@ -433,6 +477,76 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-
+    function updateDosageOptions(select) {
+        // Find the closest .medication-entry to ensure you are targeting the correct dosage select
+        const medicationEntry = select.closest('.medication-entry');
+        const dosageSelect = medicationEntry ? medicationEntry.querySelector('.dosage') : null;
+        
+        if (!dosageSelect) {
+            console.error('No element with class "dosage" found.');
+            return;
+        }
+        
+        dosageSelect.innerHTML = ''; // Clear existing options
+    
+        const medication = select.value;
+        let dosages = [];
+    
+        console.log(medication);
+        switch (medication) {
+            case 'Bromocriptine mesylate (Bromocriptine)':
+                dosages = ['1-mg tablets', '2.5-mg tablets', '5-mg capsules'];
+                break;
+            case 'Entacapone (Comtan)':
+                dosages = ['200-mg tablets'];
+                break;
+            case 'Levodopa and benserazide (Prolopa)':
+                dosages = ['50/12.5 mg capsules', '100/25-mg capsules', '200/50-mg capsules'];
+                break;
+            case 'Levodopa and carbidopa (Sinemet)':
+                dosages = ['100/25-mg tablets', '250/25-mg tablets'];
+                break;
+            case 'Levodopa and carbidopa (Sinemet CR)':
+                dosages = ['100/25-mg controlled release tablets', '250/25-mg controlled release tablets'];
+                break;
+            case 'Levodopa, carbidopa and entacapone (Stalevo)':
+                dosages = [
+                    '50/12.5/200-mg tablets', '75/18.75/200-mg tablets', '100/25/200-mg tablets',
+                    '125/31.25/200-mg tablets', '150/37.5/200-mg tablets'
+                ];
+                break;
+            case 'pdp-amantadine hydrochloride':
+                dosages = ['100-mg capsules'];
+                break;
+            case 'Pramipexole dihydrochloride monohydrate (Mirapex)':
+                dosages = ['0.125-mg tablets', '0.25-mg tablets'];
+                break;
+            case 'Rasagiline (Azilect)':
+                dosages = ['0.5-mg tablets', '1-mg tablets'];
+                break;
+            case 'Ropinirole hydrochloride (Requip)':
+                dosages = ['0.25-mg tablets', '1-mg tablets', '2-mg tablets', '5-mg tablets'];
+                break;
+            case 'Safinamide tablets (Onstryv)':
+                dosages = ['50-mg tablets', '100-mg tablets'];
+                break;
+            case 'Selegiline hydrochloride (Mylan-Selegiline)':
+                dosages = ['5-mg tablets'];
+                break;
+            case 'Other':
+                dosages = [];
+                break;
+            default:
+                dosages = [];
+        }
+    
+        dosages.forEach(dosage => {
+            const option = document.createElement('option');
+            option.value = dosage;
+            option.textContent = dosage;
+            dosageSelect.appendChild(option);
+        });
+    }
+    
     initializeForm();
 });
