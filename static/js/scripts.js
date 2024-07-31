@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         questionsContainer.appendChild(disqualificationScreen);
 
-        currentQuestionIndex = 10; //to debug med question
+        //currentQuestionIndex = 10; //to debug med question
 
         showQuestion(currentQuestionIndex);
     }
@@ -262,6 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const previousAnswer = document.querySelector(`input[name="question-${previousQuestionData.id}"]:checked`).value;
             if (previousAnswer === nextQuestionData.skipIf.previousAnswer) {
                 currentQuestionIndex++;
+                responses[currentQuestionIndex] = "No";
             }
         }
     
@@ -330,6 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
         disqualificationScreen.classList.remove('fade-out');
         disqualificationScreen.classList.add('active');
     }
+
     function showResults() {
         const questionElements = document.querySelectorAll('.question');
         questionElements.forEach(questionElement => {
@@ -338,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const ledResult = calculateLED();
-        
         const resultScreen = document.createElement('div');
         resultScreen.classList.add('question', 'result-screen');
         resultScreen.innerHTML = `
