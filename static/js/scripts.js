@@ -343,21 +343,55 @@ document.addEventListener('DOMContentLoaded', function() {
         const resultScreen = document.createElement('div');
         resultScreen.classList.add('question', 'result-screen');
         resultScreen.innerHTML = `
-            <h2>Form Complete</h2>
-            <p>Thank you for completing the survey. Based on your responses, it is advised that you:</p>
-            <p style="font-weight: bold; text-align: center; margin-top: 20px;">Present this page to your primary doctor to discuss a referral to PMDP for an assessment for device-aided therapy.</p>
-             <p>2 hours offtime: ${responses[2]}</p>
-             <p>1 hour dyskinesia: ${responses[3]}</p>
-             <p>Dystonia: ${responses[4]}</p>
-             <p>Tremor dominant: ${responses[5]}</p>
-             <p>Gait balancing impairment: ${responses[6]}</p>
-             <p>Freezing of gait: ${responses[7]}</p>
-             <p>Contra-indications: ${responses[8]}</p>
-             <p>LED Score: ${ledResult}</p> <!-- Display the calculated result -->
-            <p>Please ensure to follow up with your healthcare provider for further evaluation and potential next steps.</p>
-            <div style="text-align: center; margin-top: 30px;">
-                <button id="printButton" style="padding: 10px 20px; font-size: 16px;">PRINT/SAVE PAGE</button>
-            </div>
+<h2>Form Complete</h2>
+        <p>Thank you for completing the survey. Based on your responses, it is advised that you:</p>
+        <p style="font-weight: bold; text-align: center; margin-top: 20px;">Present this page to your primary doctor to discuss a referral to PMDP for an assessment for device-aided therapy.</p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid #000; padding: 8px;">Question</th>
+                    <th style="border: 1px solid #000; padding: 8px;">Response</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px;">2 hours off time</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${responses[2]}</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px;">1 hour dyskinesia</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${responses[3]}</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px;">Dystonia</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${responses[4]}</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px;">Tremor dominant</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${responses[5]}</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px;">Gait balancing impairment</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${responses[6]}</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px;">Freezing of gait</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${responses[7]}</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px;">Contra-indications</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${responses[8]}</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px;">LED Score</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${ledResult}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="text-align: center; margin-top: 20px;">Please ensure to follow up with your healthcare provider for further evaluation and potential next steps.</p>
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="printButton" style="padding: 10px 20px; font-size: 16px;">PRINT/SAVE PAGE</button>
+        </div>
         `;
     
         const questionsContainer = document.getElementById('questions-container');
