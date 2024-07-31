@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         questionsContainer.appendChild(disqualificationScreen);
 
-        currentQuestionIndex = 10;
+        currentQuestionIndex = 10; //to debug med question
 
         showQuestion(currentQuestionIndex);
     }
@@ -345,6 +345,13 @@ document.addEventListener('DOMContentLoaded', function() {
             <h2>Form Complete</h2>
             <p>Thank you for completing the survey. Based on your responses, it is advised that you:</p>
             <p style="font-weight: bold; text-align: center; margin-top: 20px;">Present this page to your primary doctor to discuss a referral to PMDP for an assessment for device-aided therapy.</p>
+             <p>2 hours offtime: ${responses[2]}</p>
+             <p>1 hour dyskinesia: ${responses[3]}</p>
+             <p>Dystonia: ${responses[4]}</p>
+             <p>Tremor dominant: ${responses[5]}</p>
+             <p>Gait balancing impairment: ${responses[6]}</p>
+             <p>Freezing of gait: ${responses[7]}</p>
+             <p>Contra-indications: ${responses[8]}</p>
              <p>LED Score: ${ledResult}</p> <!-- Display the calculated result -->
             <p>Please ensure to follow up with your healthcare provider for further evaluation and potential next steps.</p>
             <div style="text-align: center; margin-top: 30px;">
@@ -634,23 +641,24 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const { real_levodopa_dose, levodopa_dose, conversion_factor } = medicationInfo[dosage];
 
-            if (medicationInfo && medicationInfo[dosage]) {
+            let foundEntacapone = medicationData.some(medication => medication.type === "Entacapone (Comtan)");
+
+            if (foundEntacapone) {
+                if (medicationInfo && medicationInfo[dosage]) {
     
-                // Accumulate total real levodopa dose if it exists
-                if (real_levodopa_dose !== undefined) {
-                    totalRealLevodopa += real_levodopa_dose * frequency;
-                    totalLED -= real_levodopa_dose * frequency;
+                    // Accumulate total real levodopa dose if it exists
+                    if (real_levodopa_dose !== undefined) {
+                        totalRealLevodopa += real_levodopa_dose * frequency;
+                        totalLED -= real_levodopa_dose * frequency;
+                    }
                 }
-            }
+                totalLED += totalRealLevodopa * 0.33;
+            } 
+            
             totalLED += levodopa_dose * conversion_factor * frequency;
 
         });
 
-        let foundEntacapone = medicationData.some(medication => medication.type === "Entacapone (Comtan)");
-
-        if (foundEntacapone) {
-            totalLED += totalRealLevodopa * 0.33;
-        }
         return totalLED;
 
     }
