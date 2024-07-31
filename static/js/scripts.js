@@ -121,6 +121,8 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         questionsContainer.appendChild(disqualificationScreen);
 
+        currentQuestionIndex = 10;
+
         showQuestion(currentQuestionIndex);
     }
 
@@ -228,14 +230,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
         if (currentQuestionData.id === 10) {
             const medicationTypes = document.querySelectorAll('.medication-type');
+            const dosages = document.querySelectorAll('.dosage')
             const frequencies = document.querySelectorAll('.frequency');
             responses[currentQuestionData.id] = [];
             medicationTypes.forEach((type, index) => {
                 const typeValue = type.value;
+                const dosageValue = dosages[index].value;
                 const frequencyValue = frequencies[index].value;
                 if (typeValue !== 'select' && frequencyValue !== 'select') {
                     responses[currentQuestionData.id].push({
                         type: typeValue,
+                        dosage: dosageValue,
                         frequency: frequencyValue
                     });
                 }
@@ -331,13 +336,16 @@ document.addEventListener('DOMContentLoaded', function() {
             questionElement.classList.remove('active');
             questionElement.classList.add('fade-out');
         });
-    
+
+        const ledResult = calculateLED();
+        
         const resultScreen = document.createElement('div');
         resultScreen.classList.add('question', 'result-screen');
         resultScreen.innerHTML = `
             <h2>Form Complete</h2>
             <p>Thank you for completing the survey. Based on your responses, it is advised that you:</p>
             <p style="font-weight: bold; text-align: center; margin-top: 20px;">Present this page to your primary doctor to discuss a referral to PMDP for an assessment for device-aided therapy.</p>
+             <p>LED Score: ${ledResult}</p> <!-- Display the calculated result -->
             <p>Please ensure to follow up with your healthcare provider for further evaluation and potential next steps.</p>
             <div style="text-align: center; margin-top: 30px;">
                 <button id="printButton" style="padding: 10px 20px; font-size: 16px;">PRINT/SAVE PAGE</button>
@@ -382,15 +390,20 @@ document.addEventListener('DOMContentLoaded', function() {
             <label for="other-medication" class="other-medication-label" style="display:none;">Please specify:</label>
             <input type="text" class="other-medication-input" style="display:none;" />
             
-            <label for="frequency">Frequency:</label>
+            <label for="frequency">Number per 24 hours:</label>
             <select class="frequency custom-select"> <!-- Add 'custom-select' class -->
                 <option value="select">Select Frequency</option>
                 <option value="na">N/A</option>
-                <option value="1">1 time a day</option>
-                <option value="2">2 times a day</option>
-                <option value="3">3 times a day</option>
-                <option value="4">4 times a day</option>
-                <option value="5">5+ times a day</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
             </select>
 
             <button type="button" class="remove-medication-button">Remove</button>
@@ -492,10 +505,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const medication = select.value;
         let dosages = [];
     
-        console.log(medication);
         switch (medication) {
             case 'Bromocriptine mesylate (Bromocriptine)':
-                dosages = ['1-mg tablets', '2.5-mg tablets', '5-mg capsules'];
+                dosages = ['2.5-mg tablets', '5-mg capsules'];
                 break;
             case 'Entacapone (Comtan)':
                 dosages = ['200-mg tablets'];
@@ -546,6 +558,101 @@ document.addEventListener('DOMContentLoaded', function() {
             option.textContent = dosage;
             dosageSelect.appendChild(option);
         });
+    }
+
+    function calculateLED() {
+        const conversionFactors = {
+            "Benztropine mesylate (pdp-Benztropine)": { 
+                "1-mg tablets": { "levodopa_dose": 0, "conversion_factor": 1 } 
+            },
+            "Bromocriptine mesylate (Bromocriptine)": { 
+                "2.5-mg tablets": { "levodopa_dose": 2.5, "conversion_factor": 10 }, 
+                "5-mg capsules": { "levodopa_dose": 5, "conversion_factor": 10 } 
+            },
+            "Entacapone (Comtan)": { 
+                "200-mg tablets": { "levodopa_dose": 0, "conversion_factor": 0.33 } 
+            },
+            "Enthopropazine (Pasitan 50)": { 
+                "50-mg tablets": { "levodopa_dose": 0, "conversion_factor": 1 } 
+            },
+            "Levodopa and benserazide (Prolopa)": { 
+                "50/12.5 mg capsules": { "real_levodopa_dose": 50, "levodopa_dose": 50, "conversion_factor": 1 }, 
+                "100/25-mg capsules": { "real_levodopa_dose": 100, "levodopa_dose": 100, "conversion_factor": 1 }, 
+                "200/50-mg capsules": { "real_levodopa_dose": 200, "levodopa_dose": 200, "conversion_factor": 1 } 
+            },
+            "Levodopa and carbidopa (Sinemet)": { 
+                "100/25-mg tablets": { "real_levodopa_dose": 100, "levodopa_dose": 100, "conversion_factor": 1 },
+                "250/25-mg tablets": { "real_levodopa_dose": 250, "levodopa_dose": 250, "conversion_factor": 1 } 
+            },
+            "Levodopa and carbidopa (Sinemet CR)": { 
+                "100/25-mg controlled release tablets": { "real_levodopa_dose": 100, "levodopa_dose": 100, "conversion_factor": 0.75 },
+                "250/25-mg controlled release tablets": { "real_levodopa_dose": 250, "levodopa_dose": 250, "conversion_factor": 0.75 } 
+            },
+            //Stalevo does not need real_levodopa_doses bc this metric is only used for entacapone calculations :)
+            "Levodopa, carbidopa and entacapone (Stalevo)": {
+                "50/12.5/200-mg tablets": { "levodopa_dose": 50, "conversion_factor": 1.33 },
+                "75/18.75/200-mg tablets": { "levodopa_dose": 75, "conversion_factor": 1.33 },
+                "100/25/200-mg tablets": { "levodopa_dose": 100, "conversion_factor": 1.33 },
+                "125/31.25/200-mg tablets": { "levodopa_dose": 125, "conversion_factor": 1.33 },
+                "150/37.5/200-mg tablets": { "levodopa_dose": 150, "conversion_factor": 1.33 }
+            },
+            "pdp-amantadine hydrochloride": { 
+                "100-mg capsules": { "levodopa_dose": 100, "conversion_factor": 1 } 
+            },
+            "Pramipexole dihydrochloride monohydrate (Mirapex)": { 
+                "0.125-mg tablets": { "levodopa_dose": 0.125, "conversion_factor": 100 }, 
+                "0.25-mg tablets": { "levodopa_dose": 0.25, "conversion_factor": 100 } 
+            },
+            "Rasagiline (Azilect)": { 
+                "0.5-mg tablets": { "levodopa_dose": 0.5, "conversion_factor": 100 },
+                "1-mg tablets": { "levodopa_dose": 1, "conversion_factor": 100 } 
+            },
+            "Ropinirole hydrochloride (Requip)": { 
+                "0.25-mg tablets": { "levodopa_dose": 0.25, "conversion_factor": 20 }, 
+                "1-mg tablets": { "levodopa_dose": 1, "conversion_factor": 20 }, 
+                "2-mg tablets": { "levodopa_dose": 2, "conversion_factor": 20 }, 
+                "5-mg tablets": { "levodopa_dose": 5, "conversion_factor": 20 } 
+            },
+            //Safinamide is always a constant 100-mg, ignoring 50 or 100-mg
+            "Safinamide tablets (Onstryv)": { 
+                "50-mg tablets": { "levodopa_dose": 100, "conversion_factor": 1 }, 
+                "100-mg tablets": { "levodopa_dose": 100, "conversion_factor": 1 } 
+            },
+            "Selegiline hydrochloride (Mylan-Selegiline)": { 
+                "5-mg tablets": { "levodopa_dose": 5, "conversion_factor": 10 } 
+            }
+        };        
+        let totalLED = 0;
+        let totalRealLevodopa = 0;
+        const medicationData = responses[10] || []; // Use the data collected from the form for question 10
+    
+        medicationData.forEach(medication => {
+            const type = medication.type;
+            const frequency = medication.frequency;
+            const dosage = medication.dosage;
+            const medicationInfo = conversionFactors[type];
+            
+            const { real_levodopa_dose, levodopa_dose, conversion_factor } = medicationInfo[dosage];
+
+            if (medicationInfo && medicationInfo[dosage]) {
+    
+                // Accumulate total real levodopa dose if it exists
+                if (real_levodopa_dose !== undefined) {
+                    totalRealLevodopa += real_levodopa_dose * frequency;
+                    totalLED -= real_levodopa_dose * frequency;
+                }
+            }
+            totalLED += levodopa_dose * conversion_factor * frequency;
+
+        });
+
+        let foundEntacapone = medicationData.some(medication => medication.type === "Entacapone (Comtan)");
+
+        if (foundEntacapone) {
+            totalLED += totalRealLevodopa * 0.33;
+        }
+        return totalLED;
+
     }
     
     initializeForm();
