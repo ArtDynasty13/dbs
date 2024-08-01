@@ -255,6 +255,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     
+        if (!answeredQuestions.includes(currentQuestionIndex)) {
+            answeredQuestions.push(currentQuestionIndex);
+        }
         // Check if the next question should be skipped
         const nextQuestionData = questions[currentQuestionIndex + 1];
         if (nextQuestionData && nextQuestionData.skipIf) {
@@ -267,10 +270,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         if (answered) {
-            // Track answered question
-            if (!answeredQuestions.includes(currentQuestionIndex)) {
-                answeredQuestions.push(currentQuestionIndex);
-            }
     
             if (checkDisqualification(currentQuestionData.id, responses[currentQuestionData.id])) {
                 showDisqualificationScreen();
@@ -285,21 +284,23 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             alert('Please select an answer before proceeding.');
         }
+        console.log("Current question index: ", currentQuestionIndex, "Answered questions: ", answeredQuestions);
     }
     
 
     function previousQuestion() {
         if (answeredQuestions.length > 0) {
-            // Remove the current question from answered questions
-            answeredQuestions.pop();
             // Get the last answered question index
             const lastAnsweredQuestionIndex = answeredQuestions[answeredQuestions.length - 1];
             // Show the last answered question
             if (lastAnsweredQuestionIndex !== undefined) {
+                // Remove the current question from answered questions
+                answeredQuestions.pop();
                 showQuestion(lastAnsweredQuestionIndex);
                 currentQuestionIndex = lastAnsweredQuestionIndex;
             }
         }
+        console.log("Current question index: ", currentQuestionIndex, "Answered questions: ", answeredQuestions);
     }
     
     function checkDisqualification(questionId, response) {
