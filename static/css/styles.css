@@ -246,7 +246,7 @@ h3 {
     font-weight: 700;
     font-family: 'Inter Variable', Arial, sans-serif;
     font-size: 0.8rem;
-    margin-top: 20px;
+
     background-color: #d9534f; /* Red color */
     color: white;
 }
@@ -254,5 +254,36 @@ h3 {
 .remove-medication-button:hover {
     background-color: #c92c3c; /* Darker red */
 }
+
+#medication-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Optional: add space between rows of medication entries */
+}
+
+.medication-entry {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Center items vertically */
+    gap: 10px; /* Optional: add space between elements in the same row */
+    flex-wrap: nowrap; /* Ensure items stay in one row */
+}
+
+.medication-entry label {
+    margin: 0 5px; /* Optional: add some margin around labels for better spacing */
+}
+
+.medication-entry .custom-select,
+.medication-entry .other-medication-input,
+.medication-entry .remove-medication-button {
+    flex-shrink: 0; /* Prevent flex items from shrinking */
+}
+
+.medication-entry .remove-medication-button {
+    align-self: center; /* Center the remove button vertically */
+    height: 40px; /* Ensure consistent button height */
+}
+
+
 
 

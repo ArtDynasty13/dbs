@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         questionsContainer.appendChild(disqualificationScreen);
 
-        //currentQuestionIndex = 10; //to debug med question
+        currentQuestionIndex = 10; //to debug med question
 
         showQuestion(currentQuestionIndex);
     }
@@ -284,7 +284,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             alert('Please select an answer before proceeding.');
         }
-        console.log("Current question index: ", currentQuestionIndex, "Answered questions: ", answeredQuestions);
     }
     
 
@@ -300,7 +299,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentQuestionIndex = lastAnsweredQuestionIndex;
             }
         }
-        console.log("Current question index: ", currentQuestionIndex, "Answered questions: ", answeredQuestions);
     }
     
     function checkDisqualification(questionId, response) {
@@ -339,12 +337,12 @@ document.addEventListener('DOMContentLoaded', function() {
             questionElement.classList.remove('active');
             questionElement.classList.add('fade-out');
         });
-
+    
         const ledResult = calculateLED();
         const resultScreen = document.createElement('div');
         resultScreen.classList.add('question', 'result-screen');
         resultScreen.innerHTML = `
-<h2>Form Complete</h2>
+    <h2>Form Complete</h2>
         <p>Thank you for completing the survey. Based on your responses, it is advised that you:</p>
         <p style="font-weight: bold; text-align: center; margin-top: 20px;">Present this page to your primary doctor to discuss a referral to PMDP for an assessment for device-aided therapy.</p>
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
@@ -387,6 +385,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <td style="border: 1px solid #000; padding: 8px;">LED Score</td>
                     <td style="border: 1px solid #000; padding: 8px;">${ledResult}</td>
                 </tr>
+                ${otherMedicationValues.length > 0 ? `
+                <tr>
+                    <td style="border: 1px solid #000; padding: 8px;">Other Medications</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${otherMedicationValues.map(entry => entry.value).join(', ')}</td>
+                </tr>` : ''}
             </tbody>
         </table>
         <p style="text-align: center; margin-top: 20px;">Please ensure to follow up with your healthcare provider for further evaluation and potential next steps.</p>
@@ -406,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
             window.print();
         });
     }
-    
+    const otherMedicationValues = [];
 
     function addMedicationEntry() {
         const medicationContainer = document.getElementById('medication-container');
@@ -419,22 +422,24 @@ document.addEventListener('DOMContentLoaded', function() {
         medicationEntry.classList.add('medication-entry');
         medicationEntry.innerHTML = `
             <label for="medication-type">Medication Type:</label>
-
-            <select class="medication-type custom-select"> <!-- Add 'custom-select' class -->
+            <select class="medication-type custom-select">
                 <option value="select">Select Medication</option>
                 ${questions[10].options.map(option => `<option value="${option}">${option}</option>`).join('')}
             </select>
-
-            <select class="dosage custom-select"> <!-- Add 'custom-select' class -->
-                <option value="">Select Dosage</option>
-                <!-- Options will be populated based on medication selection -->
-            </select>
-
-            <label for="other-medication" class="other-medication-label" style="display:none;">Please specify:</label>
+    
+            <div class="dosage-container">
+                <label for="dosage">Dosage:</label>
+                <select class="dosage custom-select">
+                    <option value="">Select Dosage</option>
+                    <!-- Options will be populated based on medication selection -->
+                </select>
+            </div>
+    
+            <label for="other-medication" class="other-medication-label" style="display:none;">Please specify name(s):</label>
             <input type="text" class="other-medication-input" style="display:none;" />
             
             <label for="frequency">Number per 24 hours:</label>
-            <select class="frequency custom-select"> <!-- Add 'custom-select' class -->
+            <select class="frequency custom-select">
                 <option value="select">Select Frequency</option>
                 <option value="na">N/A</option>
                 <option value="1">1</option>
@@ -448,11 +453,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <option value="9">9</option>
                 <option value="10">10</option>
             </select>
-
+    
             <button type="button" class="remove-medication-button">Remove</button>
             <br>
         `;
-        
     
         medicationContainer.appendChild(medicationEntry);
     
@@ -467,32 +471,63 @@ document.addEventListener('DOMContentLoaded', function() {
         const medicationTypeSelect = medicationEntry.querySelector('.medication-type');
         if (medicationTypeSelect) {
             medicationTypeSelect.addEventListener('change', function() {
-                //console.log('Medication type selected:', this.value);
                 updateDosageOptions(this);
+                const dosageContainer = medicationEntry.querySelector('.dosage-container');
                 const otherMedicationInput = medicationEntry.querySelector('.other-medication-input');
                 const otherMedicationLabel = medicationEntry.querySelector('.other-medication-label');
                 if (this.value === 'Other') {
                     otherMedicationInput.style.display = 'inline';
                     otherMedicationLabel.style.display = 'inline';
                     otherMedicationInput.focus();
+                    dosageContainer.style.display = 'none'; // Hide the dosage container
                 } else {
                     otherMedicationInput.style.display = 'none';
                     otherMedicationLabel.style.display = 'none';
                     otherMedicationInput.value = ''; // Clear input when not needed
+                    dosageContainer.style.display = 'block'; // Show the dosage container
                 }
                 checkDuplicateMedication(); // Update duplicates
             });
         }
-    
+
         const otherMedicationInput = medicationEntry.querySelector('.other-medication-input');
-        if (otherMedicationInput) {
-            otherMedicationInput.addEventListener('input', checkDuplicateMedication);
-        }
-    
         const frequencySelect = medicationEntry.querySelector('.frequency');
-        if (frequencySelect) {
-            frequencySelect.addEventListener('change', checkDuplicateMedication);
+        if (otherMedicationInput) {
+            otherMedicationInput.addEventListener('blur', function() {
+                const medicationType = medicationEntry.querySelector('.medication-type').value;
+                if (medicationType === 'Other') {
+                    const value = this.value.trim();
+                    medicationEntry.id = `medication-entry-${value}`;
+                    updateOtherMedicationEntry(medicationEntry.id, value);
+                    checkDuplicateMedication(); // Check for duplicates
+                }
+            });
         }
+        if (frequencySelect) {
+            frequencySelect.addEventListener('change', function() {
+                const medicationType = medicationEntry.querySelector('.medication-type').value;
+                if (medicationType === 'Other') {
+                    updateOtherMedicationEntry(medicationEntry.id, otherMedicationInput ? otherMedicationInput.value.trim() : '', this.value);
+                }
+                checkDuplicateMedication(); // Update duplicates on frequency change
+            });
+        }
+    }       
+
+    function updateOtherMedicationEntry(id, value, frequency) {
+        const index = otherMedicationValues.findIndex(entry => entry.id === id);
+        if (index !== -1) {
+            // Update existing entry
+            otherMedicationValues[index].value = value;
+            otherMedicationValues[index].frequency = frequency;
+            console.log("Updated entry:", otherMedicationValues[index]);
+        } else {
+            // Add new entry
+            otherMedicationValues.push({ id: id, value: value, frequency: frequency });
+            console.log("Added new entry:", { id: id, value: value, frequency: frequency });
+        }
+        console.log(otherMedicationValues);
+        checkDuplicateMedication(); // Check for duplicates after update
     }
     
     function checkDuplicateMedication() {
@@ -613,7 +648,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 "5-mg capsules": { "levodopa_dose": 5, "conversion_factor": 10 } 
             },
             "Entacapone (Comtan)": { 
-                "200-mg tablets": { "levodopa_dose": 0, "conversion_factor": 0.33 } 
+                "200-mg tablets": { "levodopa_dose": 0, "conversion_factor": 0 } 
             },
             "Enthopropazine (Pasitan 50)": { 
                 "50-mg tablets": { "levodopa_dose": 0, "conversion_factor": 1 } 
@@ -667,31 +702,44 @@ document.addEventListener('DOMContentLoaded', function() {
         };        
         let totalLED = 0;
         let totalRealLevodopa = 0;
+        let offset = 0; // this is considering what is missing by the entacapone calculation
         const medicationData = responses[10] || []; // Use the data collected from the form for question 10
-    
+
+        let foundEntacapone = medicationData.some(medication => medication.type === "Entacapone (Comtan)");
         medicationData.forEach(medication => {
             const type = medication.type;
-            const frequency = medication.frequency;
-            const dosage = medication.dosage;
-            const medicationInfo = conversionFactors[type];
-            
-            const { real_levodopa_dose, levodopa_dose, conversion_factor } = medicationInfo[dosage];
 
-            let foundEntacapone = medicationData.some(medication => medication.type === "Entacapone (Comtan)");
-
-            if (foundEntacapone) {
-                if (medicationInfo && medicationInfo[dosage]) {
+            if (type !== 'Other')
+            {
+                let frequency = medication.frequency;
+                const dosage = medication.dosage;
+                const medicationInfo = conversionFactors[type];
+                
+                const { real_levodopa_dose, levodopa_dose, conversion_factor } = medicationInfo[dosage];
     
-                    // Accumulate total real levodopa dose if it exists
-                    if (real_levodopa_dose !== undefined) {
-                        totalRealLevodopa += real_levodopa_dose * frequency;
-                        totalLED -= real_levodopa_dose * frequency;
-                    }
+                if (frequency == 'na')
+                {
+                    frequency = 0;
                 }
-                totalLED += totalRealLevodopa * 0.33;
-            } 
-            
-            totalLED += levodopa_dose * conversion_factor * frequency;
+    
+                if (foundEntacapone) {
+                    if (medicationInfo && medicationInfo[dosage]) {
+        
+                        // Accumulate total real levodopa dose if it exists
+                        if (real_levodopa_dose !== undefined) {
+                            totalRealLevodopa += real_levodopa_dose * frequency;
+                        } else
+                        {
+                            offset += levodopa_dose * conversion_factor * frequency;
+                        }
+                    }
+                    totalLED = totalRealLevodopa * 0.33;
+                    totalLED += offset;
+                }else{
+                    totalLED += levodopa_dose * conversion_factor * frequency;
+                } 
+                
+            }
 
         });
 
