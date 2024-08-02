@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ${otherMedicationValues.length > 0 ? `
                 <tr>
                     <td style="border: 1px solid #000; padding: 8px;">Other Medications</td>
-                    <td style="border: 1px solid #000; padding: 8px;">${otherMedicationValues.map(entry => entry.value).join(', ')}</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${otherMedicationValues.map(entry => `${entry.value} (${entry.frequency} times/day)`).join(', ')}</td>
                 </tr>` : ''}
             </tbody>
         </table>
@@ -409,7 +409,8 @@ document.addEventListener('DOMContentLoaded', function() {
             window.print();
         });
     }
-    const otherMedicationValues = [];
+    let otherMedicationValues = [];
+    let medicationIdCounter = 0;
 
     function addMedicationEntry() {
         const medicationContainer = document.getElementById('medication-container');
@@ -435,13 +436,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 </select>
             </div>
     
-            <label for="other-medication" class="other-medication-label" style="display:none;">Please specify name(s):</label>
+            <label for="other-medication" class="other-medication-label" style="display:none;">Name:</label>
             <input type="text" class="other-medication-input" style="display:none;" />
             
             <label for="frequency">Number per 24 hours:</label>
             <select class="frequency custom-select">
-                <option value="select">Select Frequency</option>
-                <option value="na">N/A</option>
+                <option value="select">0</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -452,7 +452,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 <option value="8">8</option>
                 <option value="9">9</option>
                 <option value="10">10</option>
+                <option value="na">N/A</option>
+                <option value="more">more</option>
             </select>
+
+            <label for="custom-frequency" class="custom-frequency-label" style="display:none;">Custom Frequency:</label>
+            <input type="text" class="custom-frequency-input" style="display:none;" />
     
             <button type="button" class="remove-medication-button">Remove</button>
             <br>
@@ -464,6 +469,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (removeButton) {
             removeButton.addEventListener('click', () => {
                 medicationEntry.remove();
+                //console.log("Remove: ", medicationEntry.id)
+                removeOtherMedicationEntry(medicationEntry.id);
+
                 checkDuplicateMedication(); // Update duplicates after removal
             });
         }
@@ -497,7 +505,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const medicationType = medicationEntry.querySelector('.medication-type').value;
                 if (medicationType === 'Other') {
                     const value = this.value.trim();
-                    medicationEntry.id = `medication-entry-${value}`;
+                    medicationEntry.id = `medication-entry-${value}-${medicationIdCounter++}`;
                     updateOtherMedicationEntry(medicationEntry.id, value);
                     checkDuplicateMedication(); // Check for duplicates
                 }
@@ -512,7 +520,51 @@ document.addEventListener('DOMContentLoaded', function() {
                 checkDuplicateMedication(); // Update duplicates on frequency change
             });
         }
-    }       
+
+        if (frequencySelect) {
+            frequencySelect.addEventListener('change', function() {
+                const customFrequencyInput = medicationEntry.querySelector('.custom-frequency-input');
+                const customFrequencyLabel = medicationEntry.querySelector('.custom-frequency-label');
+                if (this.value === 'more') {
+                    customFrequencyInput.style.display = 'inline';
+                    customFrequencyLabel.style.display = 'inline';
+                    customFrequencyInput.focus();
+                } else {
+                    customFrequencyInput.style.display = 'none';
+                    customFrequencyLabel.style.display = 'none';
+                    customFrequencyInput.value = ''; // Clear input when not needed
+                }
+                checkDuplicateMedication(); // Update duplicates on frequency change
+            });
+        }
+
+        const customFrequencyInput = medicationEntry.querySelector('.custom-frequency-input');
+        if (customFrequencyInput) {
+            customFrequencyInput.addEventListener('change', function() {
+                const frequencySelect = medicationEntry.querySelector('.frequency');
+                if (frequencySelect.value === 'more') {
+                    console.log("more!");
+                    const frequency = parseInt(this.value.trim(), 10);
+                    if (!isNaN(frequency) && frequency > 10) {
+                        updateOtherMedicationEntry(medicationEntry.id, otherMedicationInput.value.trim(), frequency);
+                    } else {
+                        alert('Please enter a valid number greater than 10.');
+                    }
+                }
+            });
+        }
+    }   
+    
+    function removeOtherMedicationEntry(id)
+    {
+        const index = otherMedicationValues.findIndex(entry => entry.id === id);
+        if (index !== -1)
+        {
+            console.log("REMOVE");
+            otherMedicationValues = otherMedicationValues.filter(entry => entry.id !== id);
+            console.log(otherMedicationValues);
+        }
+    }
 
     function updateOtherMedicationEntry(id, value, frequency) {
         const index = otherMedicationValues.findIndex(entry => entry.id === id);
