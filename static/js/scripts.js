@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         questionsContainer.appendChild(disqualificationScreen);
 
-        currentQuestionIndex = 10; //to debug med question
+        //currentQuestionIndex = 10; //to debug med question
 
         showQuestion(currentQuestionIndex);
     }
@@ -342,7 +342,17 @@ document.addEventListener('DOMContentLoaded', function() {
         disqualificationScreen.classList.add('active');
     }
 
+    let otherMedicationValues = [];
+    
     function showResults() {
+        otherMedicationValues = otherMedicationValues.filter(entry => {
+            if (entry.id === "") {
+                console.log("Removing entry with empty id:", entry);
+                return false; // This entry will be removed
+            }
+            return true; // This entry will be kept
+        });
+
         const questionElements = document.querySelectorAll('.question');
         questionElements.forEach(questionElement => {
             questionElement.classList.remove('active');
@@ -420,7 +430,6 @@ document.addEventListener('DOMContentLoaded', function() {
             window.print();
         });
     }
-    let otherMedicationValues = [];
     let medicationIdCounter = 0;
 
     function addMedicationEntry() {
@@ -595,13 +604,6 @@ document.addEventListener('DOMContentLoaded', function() {
             otherMedicationValues = otherMedicationValues.filter(entry => entry.id !== id);
             console.log(otherMedicationValues);
         }
-        otherMedicationValues = otherMedicationValues.filter(entry => {
-            if (entry.id === "") {
-                console.log("Removing entry with empty id:", entry);
-                return false; // This entry will be removed
-            }
-            return true; // This entry will be kept
-        });
     }
 
     function updateOtherMedicationEntry(id, value, frequency) {
