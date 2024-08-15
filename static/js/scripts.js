@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         questionsContainer.appendChild(disqualificationScreen);
 
-        currentQuestionIndex = 10; //to debug med question
+        //currentQuestionIndex = 10; //to debug med question
 
         showQuestion(currentQuestionIndex);
     }
