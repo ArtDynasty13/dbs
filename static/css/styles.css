@@ -295,6 +295,12 @@ h3 {
     flex-basis: 50px; /* Set initial size */
 }
 
+/* Specific style for custom-frequency-input to limit width */
+.medication-entry .custom-dosage-input {
+    max-width: 100px; /* Set maximum width */
+    flex-basis: 100px; /* Set initial size */
+}
+
 /* Center remove button in medication entry */
 .medication-entry .remove-medication-button {
     align-self: center; /* Center button vertically */

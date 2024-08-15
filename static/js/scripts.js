@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "Please list your current PD medications frequency.",
             options: [
                 //"Benztropine mesylate (pdp-Benztropine)",
-                "Bromocriptine mesylate (Bromocriptine)",
+                //"Bromocriptine mesylate (Bromocriptine)",
                 "Entacapone (Comtan)",
                 //"Enthopropazine (Pasitan 50)",
                 "Levodopa and benserazide (Prolopa)",
@@ -91,8 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 "Pramipexole dihydrochloride monohydrate (Mirapex)",
                 "Rasagiline (Azilect)",
                 "Ropinirole hydrochloride (Requip)",
-                "Safinamide tablets (Onstryv)",
                 "Selegiline hydrochloride (Mylan-Selegiline)",
+                "Rotigotine (Neupro)",
+                "Foslevodopa/foscarbidopa (VYALEV)",
+                "Levodopa/carbidopa intestinal gel (DUODOPA)",
                 "Other"
             ],            
             multiple: false
@@ -121,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         questionsContainer.appendChild(disqualificationScreen);
 
-        //currentQuestionIndex = 10; //to debug med question
+        currentQuestionIndex = 10; //to debug med question
 
         showQuestion(currentQuestionIndex);
     }
@@ -230,29 +232,47 @@ document.addEventListener('DOMContentLoaded', function() {
     
         if (currentQuestionData.id === 10) {
             const medicationTypes = document.querySelectorAll('.medication-type');
+
             const dosages = document.querySelectorAll('.dosage')
+            const customDosageInputs = document.querySelectorAll('.custom-dosage-input');
+
             const frequencies = document.querySelectorAll('.frequency');
-            console.log(frequencies);
+            const customFrequenciesInputs = document.querySelectorAll('.custom-frequency-input');
+
+
+            console.log("dosages: ", dosages);
+            console.log("customdosages: ", customDosageInputs);
+
+            //console.log(frequencies);
             responses[currentQuestionData.id] = [];
             medicationTypes.forEach((type, index) => {
                 const typeValue = type.value;
-                const dosageValue = dosages[index].value;
-                const frequencyValue = frequencies[index].value;
-                if (typeValue !== 'select' && frequencyValue !== 'select' && frequencyValue !== 'more') {
-                    responses[currentQuestionData.id].push({
-                        type: typeValue,
-                        dosage: dosageValue,
-                        frequency: frequencyValue
-                    });
-                }
-                if(frequencyValue === 'more')
+                const dosageElement = dosages[index];
+                const customDosageInput = customDosageInputs[index];
+                const frequencyElement = frequencies[index];
+                const customFrequencyInput = customFrequenciesInputs[index];
+
+                if(dosageElement && frequencyElement)
                 {
-                    const nonCustomFrequency = parseInt(document.querySelector('.custom-frequency-input').value, 10);
-                    responses[currentQuestionData.id].push({
-                        type: typeValue,
-                        dosage: dosageValue,
-                        frequency: nonCustomFrequency
-                    });
+                    let dosageValue = dosageElement.value || '';
+                    let frequencyValue = frequencyElement.value || '';
+
+                    if(dosageValue === '' && customDosageInput) {
+                        dosageValue = customDosageInput.value || '';
+                    }
+
+                    if(frequencyValue === 'more' && customFrequencyInput) {
+                        frequencyValue = customFrequencyInput.value || '';
+                    }
+
+                    // Add the medication data to the responses if all conditions are met
+                    if (typeValue !== 'select' && frequencyValue !== 'select' && frequencyValue !== 'more' && dosageValue !== '') {
+                        responses[currentQuestionData.id].push({
+                            type: typeValue,
+                            dosage: dosageValue,
+                            frequency: frequencyValue
+                        });
+                    }
                 }
                 console.log("Responses: ", responses);
             });
@@ -438,6 +458,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("Medication container not found in the DOM.");
             return;
         }
+
+        let customDosageText = `Custom dosage:`;
     
         //for some reason the id is changing
         const medicationEntry = document.createElement('div');
@@ -459,6 +481,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
             <label for="other-medication" class="other-medication-label" style="display:none;">Name:</label>
             <input type="text" class="other-medication-input" style="display:none;" />
+
+            <label for="custom-dosage" class="custom-dosage-label" style="display:none;">${customDosageText}</label>
+            <input type="text" class="custom-dosage-input" style="display:none;" />
             
             <label for="frequency">Number per 24 hours:</label>
             <select class="frequency custom-select">
@@ -505,18 +530,68 @@ document.addEventListener('DOMContentLoaded', function() {
                 const dosageContainer = medicationEntry.querySelector('.dosage-container');
                 const otherMedicationInput = medicationEntry.querySelector('.other-medication-input');
                 const otherMedicationLabel = medicationEntry.querySelector('.other-medication-label');
+
+                const customDosageInput = medicationEntry.querySelector('.custom-dosage-input');
+                const customDosageLabel = medicationEntry.querySelector('.custom-dosage-label');
+
+                const frequencyDropdown = medicationEntry.querySelector('.frequency');
+                const frequencyLabel = frequencyDropdown ? frequencyDropdown.previousElementSibling : null; // Get the label if the dropdown is found
+
                 if (this.value === 'Other') {
                     otherMedicationInput.style.display = 'inline';
                     otherMedicationLabel.style.display = 'inline';
                     otherMedicationInput.focus();
                     dosageContainer.style.display = 'none'; // Hide the dosage container
+
+                    customDosageInput.style.display = 'none';
+                    customDosageLabel.style.display = 'none';
                 } else {
                     otherMedicationInput.style.display = 'none';
                     otherMedicationLabel.style.display = 'none';
                     otherMedicationInput.value = ''; // Clear input when not needed
                     dosageContainer.style.display = 'block'; // Show the dosage container
+
+                    if (this.value === 'Rotigotine (Neupro)' || this.value === 'Foslevodopa/foscarbidopa (VYALEV)' || this.value === 'Levodopa/carbidopa intestinal gel (DUODOPA)') {
+                        frequencyDropdown.value = '1';
+                        frequencyDropdown.style.display = 'none';
+                        frequencyLabel.style.display = 'none';
+                        
+                            if (this.value === 'Foslevodopa/foscarbidopa (VYALEV)' || this.value === 'Levodopa/carbidopa intestinal gel (DUODOPA)'){
+                                if(this.value === 'Foslevodopa/foscarbidopa (VYALEV)')
+                                {
+                                    customDosageText = 'Dosage (mL/hour): ';
+                                }
+                                if(this.value === 'Levodopa/carbidopa intestinal gel (DUODOPA)')
+                                {
+                                    customDosageText = 'Total Daily Dosage (mg): ';
+                                }
+                                customDosageLabel.textContent = customDosageText;
+                                customDosageInput.style.display = 'inline';
+                                customDosageLabel.style.display = 'inline';
+
+                                dosageContainer.style.display = 'none';
+                            }
+
+                    } else {
+                        frequencyDropdown.style.display = 'block';
+                        frequencyLabel.style.display = 'block';
+
+                        customDosageInput.style.display = 'none';
+                        customDosageLabel.style.display = 'none';
+
+                        dosageContainer.style.display = 'block';
+                    }
                 }
-                checkDuplicateMedication(); // Update duplicates
+                checkDuplicateMedication();
+            });
+        }
+
+        const customDosageInput = medicationEntry.querySelector('.custom-dosage-input');
+
+        if(customDosageInput) {
+            customDosageInput.addEventListener('blur', function(){
+                const dosageValue = customDosageInput.value;
+                dosage = dosageValue;
             });
         }
 
@@ -536,7 +611,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Handle predefined frequency
                         frequency = parseInt(frequencySelect.value, 10);
                     }
-                    const value = this.value.trim();
                     medicationEntry.id = `medication-entry-${value}-${medicationIdCounter++}`;
                     updateOtherMedicationEntry(medicationEntry.id, value, frequency);
                     checkDuplicateMedication(); // Check for duplicates
@@ -678,9 +752,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let dosages = [];
     
         switch (medication) {
-            case 'Bromocriptine mesylate (Bromocriptine)':
-                dosages = ['2.5-mg tablets', '5-mg capsules'];
-                break;
             case 'Entacapone (Comtan)':
                 dosages = ['200-mg tablets'];
                 break;
@@ -703,7 +774,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 dosages = ['100-mg capsules'];
                 break;
             case 'Pramipexole dihydrochloride monohydrate (Mirapex)':
-                dosages = ['0.125-mg tablets', '0.25-mg tablets'];
+                dosages = ['0.125-mg tablets', '0.25-mg tablets', '0.5-mg tablets', '1-mg tablets', '1.5-mg tablets'];
                 break;
             case 'Rasagiline (Azilect)':
                 dosages = ['0.5-mg tablets', '1-mg tablets'];
@@ -716,6 +787,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'Selegiline hydrochloride (Mylan-Selegiline)':
                 dosages = ['5-mg tablets'];
+                break;
+            case 'Rotigotine (Neupro)':
+                dosages = ['1-mg 24-hr', '2-mg 24-hr', '3-mg 24-hr', '4-mg 24-hr', '6-mg 24-hr', '8-mg 24-hr'];
                 break;
             case 'Other':
                 dosages = [];
@@ -773,7 +847,10 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             "Pramipexole dihydrochloride monohydrate (Mirapex)": { 
                 "0.125-mg tablets": { "levodopa_dose": 0.125, "conversion_factor": 100 }, 
-                "0.25-mg tablets": { "levodopa_dose": 0.25, "conversion_factor": 100 } 
+                "0.25-mg tablets": { "levodopa_dose": 0.25, "conversion_factor": 100 },
+                "0.5-mg tablets": { "levodopa_dose": 0.5, "conversion_factor": 100 },
+                "1-mg tablets": { "levodopa_dose": 1, "conversion_factor": 100 },
+                "1.5-mg tablets": { "levodopa_dose": 1.5, "conversion_factor": 100 }
             },
             "Rasagiline (Azilect)": { 
                 "0.5-mg tablets": { "levodopa_dose": 0.5, "conversion_factor": 100 },
@@ -792,6 +869,20 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             "Selegiline hydrochloride (Mylan-Selegiline)": { 
                 "5-mg tablets": { "levodopa_dose": 5, "conversion_factor": 10 } 
+            },
+            "Rotigotine (Neupro)" : {
+                '1-mg 24-hr': { "levodopa_dose": 1, "conversion_factor": 30 },
+                '2-mg 24-hr': { "levodopa_dose": 2, "conversion_factor": 30 },
+                '3-mg 24-hr': { "levodopa_dose": 3, "conversion_factor": 30 },
+                '4-mg 24-hr': { "levodopa_dose": 4, "conversion_factor": 30 },
+                '6-mg 24-hr': { "levodopa_dose": 6, "conversion_factor": 30 },
+                '8-mg 24-hr': { "levodopa_dose": 8, "conversion_factor": 30 }
+            },                
+            "Foslevodopa/foscarbidopa (VYALEV)" : {
+                "conversion_factor": 170
+            },
+            "Levodopa/carbidopa intestinal gel (DUODOPA)" : {
+                "conversion_factor": 1.11
             }
         };        
         let totalLED = 0;
@@ -803,7 +894,7 @@ document.addEventListener('DOMContentLoaded', function() {
         medicationData.forEach(medication => {
             const type = medication.type;
 
-            if (type !== 'Other')
+            if (type !== 'Other' && type !== 'Foslevodopa/foscarbidopa (VYALEV)' && type !== 'Levodopa/carbidopa intestinal gel (DUODOPA)')
             {
                 let frequency = medication.frequency;
                 const dosage = medication.dosage;
@@ -833,6 +924,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     totalLED += levodopa_dose * conversion_factor * frequency;
                 } 
                 
+            }
+            const dosage = medication.dosage;
+            if(type === 'Foslevodopa/foscarbidopa (VYALEV)') {
+                totalLED += dosage * 170;
+    
+            }
+            else if(type === 'Levodopa/carbidopa intestinal gel (DUODOPA)') {
+                totalLED += dosage * 1.11;
             }
 
         });
