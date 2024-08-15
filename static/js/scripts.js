@@ -259,10 +259,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     if(dosageValue === '' && customDosageInput) {
                         dosageValue = customDosageInput.value || '';
+
+                        if (isNaN(dosageValue) || parseFloat(dosageValue) <= 0) {
+                            alert("Please enter a valid number greater than 0.");
+                            return; // Exit the forEach loop early
+                        }
                     }
 
                     if(frequencyValue === 'more' && customFrequencyInput) {
                         frequencyValue = customFrequencyInput.value || '';
+
+                        if (isNaN(frequencyValue) || parseFloat(frequencyValue) <= 10) {
+                            alert("Please enter a valid number greater than 10.");
+                            return; // Exit the forEach loop early
+                        }
                     }
 
                     // Add the medication data to the responses if all conditions are met
@@ -590,8 +600,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if(customDosageInput) {
             customDosageInput.addEventListener('blur', function(){
-                const dosageValue = customDosageInput.value;
-                dosage = dosageValue;
+                if(isNaN(customDosageInput.value) || !customDosageInput.value > 0)
+                {
+                    alert("Please enter a valid number greater than 0.")
+                }
             });
         }
 
