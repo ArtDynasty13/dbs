@@ -15,12 +15,12 @@ FAILURE - a non-candidacy message is shown to the user
 Server.js - runs the server on localhost:3000. The site also runs on Github pages.
 
 Static Folder
-    CSS Folder
-        styles.css - styling for buttons, layout, font size, etc.
-    Fonts Folder
-        Holds Google font for text. Accessed by styles.css
-    js Folder*
-        scripts.js - handles the majority of the logic and content. Can edit questions, medications (names, dosages, frequencycalculations of LEDD), progression, messages, etc.
+ - CSS Folder
+       - styles.css - styling for buttons, layout, font size, etc.
+    - Fonts Folder
+        - Holds Google font for text. Accessed by styles.css
+    - js Folder*
+        - scripts.js - handles the majority of the logic and content. Can edit questions, medications (names, dosages, frequencycalculations of LEDD), progression, messages, etc.
 
 *goes w/out saying, but this is the bulk of the code.
 
