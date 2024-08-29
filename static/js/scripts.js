@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         questionsContainer.appendChild(disqualificationScreen);
 
-        currentQuestionIndex = 10; //to debug med question
+        //currentQuestionIndex = 10; //to debug med question
 
         showQuestion(currentQuestionIndex);
     }
@@ -400,11 +400,11 @@ document.addEventListener('DOMContentLoaded', function() {
             </thead>
             <tbody>
                 <tr>
-                    <td style="border: 1px solid #000; padding: 8px;">2 hours off time</td>
+                    <td style="border: 1px solid #000; padding: 8px;">≥2 hours off time</td>
                     <td style="border: 1px solid #000; padding: 8px;">${responses[2]}</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #000; padding: 8px;">1 hour dyskinesia</td>
+                    <td style="border: 1px solid #000; padding: 8px;">≥1 hour disabling dyskinesia</td>
                     <td style="border: 1px solid #000; padding: 8px;">${responses[3]}</td>
                 </tr>
                 <tr>
@@ -412,8 +412,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     <td style="border: 1px solid #000; padding: 8px;">${responses[4]}</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #000; padding: 8px;">Tremor dominant</td>
-                    <td style="border: 1px solid #000; padding: 8px;">${responses[5]}</td>
+                    <th style="border: 1px solid #000; padding: 8px;">5-2-1 Rule</th>
+                    <th style="border: 1px solid #000; padding: 8px;">Yes</th>
+                </tr>
+                <tr>
+                    <th style="border: 1px solid #000; padding: 8px;">Tremor dominant</th>
+                    <th style="border: 1px solid #000; padding: 8px;">${responses[5]}</th>
                 </tr>
                 <tr>
                     <td style="border: 1px solid #000; padding: 8px;">Gait balancing impairment</td>
@@ -428,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <td style="border: 1px solid #000; padding: 8px;">${responses[8]}</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #000; padding: 8px;">LED Score</td>
+                    <td style="border: 1px solid #000; padding: 8px;">LEDD (mg)</td>
                     <td style="border: 1px solid #000; padding: 8px;">${ledResult}</td>
                 </tr>
                 ${otherMedicationValues.length > 0 ? `
