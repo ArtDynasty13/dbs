@@ -1,6 +1,28 @@
 # DBS Patient Self-Referral Pathway
 
-This web application provides a self-referral pathway for Deep Brain Stimulation (DBS) patients. The goal is to streamline the referral process, making it easier for patients to access the care they need.
+This web application is a prototype self-referral pathway for Deep Brain Stimulation (DBS) patients. It was solo-developed over July-Aug 2024 as a summer internship research project under Dr. Fang Ba. The goal is to streamline the referral process, making it easier for patients to access the care they need, by interfacting with AHS ConnectCare. 
+
+## Logic
+
+Determination of successful candidacy is based on the 5-2-1 rule (second and third question must have at least one 'yes') and contra-indications in later questions relating to depression, dementia, psychosis, etc. Other information (gait balance impairment, tremor) and recorded but do not affect outcome.
+
+SUCCESS - patients will be shown their results, along with an instruction to print this report and show it to their physician. In the future, the actual pathway will go directly to the neurologist through AHS ConnectCare chat.
+
+FAILURE - a non-candidacy message is shown to the user
+
+## Editing
+
+Server.js - runs the server on localhost:3000. The site also runs on Github pages.
+
+Static Folder
+    CSS Folder
+        styles.css - styling for buttons, layout, font size, etc.
+    Fonts Folder
+        Holds Google font for text. Accessed by styles.css
+    js Folder*
+        scripts.js - handles the majority of the logic and content. Can edit questions, medications (names, dosages, frequencycalculations of LEDD), progression, messages, etc.
+
+*goes w/out saying, but this is the bulk of the code.
 
 ## Getting Started
 
