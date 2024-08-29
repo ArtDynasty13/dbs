@@ -13,13 +13,6 @@ This web application provides a self-referral pathway for Deep Brain Stimulation
 - [License](#license)
 - [Contact](#contact)
 
-## Features
-
-- **Patient Registration**: Allows patients to register and submit self-referral forms.
-- **Doctor Portal**: Provides doctors with access to submitted referrals for review.
-- **Status Tracking**: Patients can track the status of their referral.
-- **Secure Data Handling**: Ensures that all patient data is securely stored and managed.
-
 ## Getting Started
 
 These instructions will help you set up the project on your local machine for development and testing purposes.
@@ -27,7 +20,7 @@ These instructions will help you set up the project on your local machine for de
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v14 or higher)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- [npm](https://www.npmjs.com/)
 
 ### Installation
 
