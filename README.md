@@ -14,7 +14,7 @@ FAILURE - a non-candidacy message is shown to the user
 
 Server.js - runs the server on localhost:3000. The site also runs on Github pages.
 
-Static Folder
+- Static Folder
  - CSS Folder
        - styles.css - styling for buttons, layout, font size, etc.
     - Fonts Folder
