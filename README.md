@@ -10,27 +10,92 @@ These instructions will help you set up the project on your local machine for de
 
 - [Node.js](https://nodejs.org/) (v14 or higher)
 - [npm](https://www.npmjs.com/)
+- [GitHub Desktop](https://desktop.github.com/) (optional)
 
 ### Installation
 
+You can either use the command line or GitHub Desktop to clone the repository.
+
+#### Option 1: Command Line
+
 1. **Clone the repository**:
+
+    Open your terminal (Command Prompt, Git Bash, etc.) and run:
 
     ```bash
     git clone https://github.com/ArtDynasty13/dbs.git
+    ```
+
+2. **Navigate to the project directory**:
+
+    ```bash
     cd dbs
     ```
 
-2. **Install dependencies**:
+3. **Install dependencies**:
+
+    Run the following command to install all necessary packages:
 
     ```bash
     npm install
     ```
 
-3. **Start the development server**:
+4. **Start the development server**:
+
+    You have two options to start the server:
+
+    - **Option A**: Use npm start (recommended):
+
+        ```bash
+        npm start
+        ```
+
+    - **Option B**: Run `server.js` directly using Node.js:
+
+        ```bash
+        node server.js
+        ```
+
+    Both options will start your application on `http://localhost:3000`. Open your web browser and navigate to this URL to see the application.
+
+#### Option 2: GitHub Desktop
+
+1. **Clone the repository**:
+
+    - Open GitHub Desktop and sign in with your GitHub account.
+    - Click on `File > Clone repository`.
+    - In the `URL or username/repository` field, enter `https://github.com/ArtDynasty13/dbs.git`.
+    - Choose a local path where you want to save the project, then click `Clone`.
+
+2. **Navigate to the project directory**:
+
+    - After cloning, click on `Repository > Open in Terminal` to open the terminal in the project's directory.
+
+3. **Install dependencies**:
+
+    In the terminal that opens, run:
 
     ```bash
-    npm start
+    npm install
     ```
+
+4. **Start the development server**:
+
+    You can start the server using one of these two commands:
+
+    - **Option A**: Use npm start (recommended):
+
+        ```bash
+        npm start
+        ```
+
+    - **Option B**: Run `server.js` directly using Node.js:
+
+        ```bash
+        node server.js
+        ```
+
+    Open your web browser and navigate to `http://localhost:3000` to view the application.
 
 ## License
 
