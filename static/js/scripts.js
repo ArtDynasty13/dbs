@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         questionsContainer.appendChild(disqualificationScreen);
 
-        //currentQuestionIndex = 10; //to debug med question
+        currentQuestionIndex = 10; //to debug med question
 
         showQuestion(currentQuestionIndex);
     }
@@ -240,8 +240,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const customFrequenciesInputs = document.querySelectorAll('.custom-frequency-input');
 
 
-            console.log("dosages: ", dosages);
-            console.log("customdosages: ", customDosageInputs);
+            //console.log("dosages: ", dosages);
+            //console.log("customdosages: ", customDosageInputs);
 
             //console.log(frequencies);
             responses[currentQuestionData.id] = [];
@@ -291,6 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
             questionInputs.forEach(input => {
                 if (input.checked) {
                     answered = true;
+                    console.log("answered");
                     responses[currentQuestionData.id] = input.value;
                 }
             });
@@ -375,19 +376,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let otherMedicationValues = [];
     
     function showResults() {
-        otherMedicationValues = otherMedicationValues.filter(entry => {
-            if (entry.id === "") {
-                console.log("Removing entry with empty id:", entry);
-                return false; // This entry will be removed
-            }
-            return true; // This entry will be kept
-        });
-
         const questionElements = document.querySelectorAll('.question');
         questionElements.forEach(questionElement => {
             questionElement.classList.remove('active');
             questionElement.classList.add('fade-out');
         });
+
+        console.log(otherMedicationValues);
     
         const ledResult = calculateLED();
         const resultScreen = document.createElement('div');
@@ -525,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (removeButton) {
             removeButton.addEventListener('click', () => {
                 medicationEntry.remove();
-                //console.log("Remove: ", medicationEntry.id)
+                console.log("Remove: ", medicationEntry.id)
                 removeOtherMedicationEntry(medicationEntry.id);
 
                 checkDuplicateMedication(); // Update duplicates after removal
@@ -623,8 +618,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Handle predefined frequency
                         frequency = parseInt(frequencySelect.value, 10);
                     }
-                    medicationEntry.id = `medication-entry-${value}-${medicationIdCounter++}`;
-                    updateOtherMedicationEntry(medicationEntry.id, value, frequency);
+                    medicationEntry.id = `medication-entry-${medicationType}-${medicationIdCounter++}`;
+                    updateOtherMedicationEntry(medicationEntry.id, medicationEntry.querySelector('.other-medication-input').value, frequency);
                     checkDuplicateMedication(); // Check for duplicates
                 }
             });
@@ -644,7 +639,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     customFrequencyInput.value = ''; // Clear input when not needed
 
                     const nonCustomFrequency = parseInt(this.value, 10);
-                    if (!isNaN(nonCustomFrequency)) {
+                    if (!isNaN(nonCustomFrequency) && medicationEntry.querySelector('.medication-type').value === 'Other') {
                         // Update the medication entry with the non-custom frequency
                         updateOtherMedicationEntry(medicationEntry.id, otherMedicationInput.value.trim(), nonCustomFrequency);
                     }
@@ -675,7 +670,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         alert('Please enter a valid number greater than 10.');
                     }
-                    console.log("Frequency", frequency);
+                    //console.log("Frequency", frequency);
                 }
             });
         }
@@ -699,14 +694,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update existing entry
             otherMedicationValues[index].value = value;
             otherMedicationValues[index].frequency = frequency;
-            console.log("Updated entry:", otherMedicationValues[index]);
+            //console.log("Updated entry:", otherMedicationValues[index]);
         } else {
             // Add new entry
             otherMedicationValues.push({ id: id, value: value, frequency: frequency });
             console.log("Added new entry:", { id: id, value: value, frequency: frequency });
-            console.log("Frequency: ", frequency)
+            //console.log("Frequency: ", frequency)
         }
-        console.log(otherMedicationValues);
+        //console.log(otherMedicationValues);
         checkDuplicateMedication(); // Check for duplicates after update
     }
     
