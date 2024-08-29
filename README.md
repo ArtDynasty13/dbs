@@ -2,17 +2,6 @@
 
 This web application provides a self-referral pathway for Deep Brain Stimulation (DBS) patients. The goal is to streamline the referral process, making it easier for patients to access the care they need.
 
-## Table of Contents
-
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
-
 ## Getting Started
 
 These instructions will help you set up the project on your local machine for development and testing purposes.
